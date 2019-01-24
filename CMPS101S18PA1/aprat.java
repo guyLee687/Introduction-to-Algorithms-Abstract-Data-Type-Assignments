@@ -1,7 +1,6 @@
 
 public class APRat
 {
-	private int sign = 1; // 1 (+) & 0 (-)
 	private APInt numerator;
 	private APInt denominator;
 
@@ -11,7 +10,7 @@ public class APRat
 		denominator = new APInt(1);
 	}
 
-	public APRat(APInt numerator, APInt double denominator)
+	public APRat(APInt numerator, APInt denominator)
 	{
 		this.numerator = numerator;
 		this.denominator = denominator;
@@ -39,7 +38,7 @@ public class APRat
 		return new APInt(denominator);
 	}
 
-	public Aprat add(APRat fracAdd)
+	public APRat add(APRat fracAdd)
 	{
 		APInt num2 = fracAdd.getNumerator();
 		APInt dem2 = fracAdd.getDenominator();
@@ -48,27 +47,27 @@ public class APRat
 		return new APRat(newNum, newDem);
 	}
 
-	public Aprat subtract(APRat fracSubtr)
+	public APRat subtract(APRat fracSubtr)
 	{
-		APInt num2 = fracAdd.getNumerator();
-		APInt dem2 = fracAdd.getDenominator();
+		APInt num2 = fracSubtr.getNumerator();
+		APInt dem2 = fracSubtr.getDenominator();
 		APInt newNum = (numerator.multiply(dem2)).add(num2.multiply(denominator));
 		APInt newDem = (denominator.multiply(dem2));
 		return new APRat(newNum, newDem);
 
 	}
 
-	public Aprat multiply(APRat fracFac)
+	public APRat multiply(APRat fracFac)
 	{
 		APInt num = numerator.multiply(fracFac.getNumerator());
 		APInt dem = denominator.multiply(fracFac.getDenominator());
 		return new APRat(num, dem);
 	}
 
-	public Aprat divide(Aprat fracDiv)
+	public APRat divide(APRat fracDiv)
 	{
-		APInt num = numerator.multiply(fracFac.getDenominator());
-		APInt dem = denominator.multiply(fracFac.getNumerator());
+		APInt num = numerator.multiply(fracDiv.getDenominator());
+		APInt dem = denominator.multiply(fracDiv.getNumerator());
 		return new APRat(num, dem);
 	}
 
@@ -93,7 +92,7 @@ public class APRat
 		{
 			remainder = dividend.getRemainder(remainder);
 		}
-		while(remainder.compareTo(empty) == 0)
+		while(remainder.compareTo(empty) == 0);
 		
 		numerator = numerator.divide(remainder);
 		denominator = denominator.divide(remainder);
@@ -102,7 +101,7 @@ public class APRat
 	public String toString()
 	{
 		normalize();
-		return "Numerator: " numerator.toString() + 
+		return "Numerator: " + numerator.toString() + 
 				"\nDenominator: " + denominator.toString();
 	}
 
