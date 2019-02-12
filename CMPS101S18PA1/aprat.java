@@ -6,8 +6,17 @@
 //Class: COMPS-101B (D.Bailey)
 
 /**********************************************************************************
-Programming Assignment 1: APInt Class (Abstract Data Type)
+Programming Assignment 1: APRat Class (Abstract Data Type)
+An arbitrary precision Rational which has no fixed limit to the size of 
+the number. It implements a LinkedList where the nodes designates the positional
+value of the digits. It contains the following methods
 
+•a defaultconstructor
+•a constructor for usingapints to represent the numerator and denomina-tor.
+•a constructor for conversion of a pair of ints.•a constructor for conversion of reals to a specified precision.
+•a method for printing.
+•methods for addition, subtraction, multiplication and division.
+•normalize the result of every operation, i.e., reduce the fraction tolowestterms.
 ***********************************************************************************/
 public class APRat
 {
@@ -106,7 +115,7 @@ public class APRat
 	{
 		APInt num2 = fracSubtr.getNumerator();
 		APInt dem2 = fracSubtr.getDenominator();
-		APInt newNum = (numerator.multiply(dem2)).add(num2.multiply(denominator));
+		APInt newNum = (numerator.multiply(dem2)).subtract(num2.multiply(denominator));
 		APInt newDem = (denominator.multiply(dem2));
 		return new APRat(newNum, newDem);
 
@@ -170,6 +179,8 @@ public class APRat
 			//Euclid's method
 			modulus_a = new APInt(remainder);
 			modulus_b = dividend.getRemainder(remainder);
+			remainder = modulus_a.getRemainder(modulus_b);
+
 			//Continue till remainder is zero
 			while(remainder.getFirst() != 0 )
 			{
@@ -194,5 +205,4 @@ public class APRat
 		return "Numerator: " + numerator.toString() + 
 		"\nDenominator: " + denominator.toString();
 	}
-
 }

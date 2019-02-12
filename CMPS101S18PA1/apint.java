@@ -6,7 +6,15 @@
 
 /**********************************************************************************
 Programming Assignment 1: APInt Class (Abstract Data Type)
+An arbitrary precision Integer which has no fixed limit to the size of 
+the number. It implements a LinkedList where the nodes designates the positional
+value of the digits. It contains the following methods
 
+•a default constructor•a constructor which uses a string, made up of optional{+,-}
+followed bya string of characters from{0,1,2,3,4,5,6,7,8,9}as an input argument.
+•a constructor for conversion of ints.•a constructor for conversion of reals that truncates the fractional part.
+•a method for printing.
+•methods for addition, subtraction, multiplication and division.
 ***********************************************************************************/
 
 public class APInt
@@ -648,12 +656,13 @@ public class APInt
 	{
 		//Intialize the quotient 
 		APInt quotient = new APInt();
-		
+		APInt identity = new APInt(1);
+
 		//If divisor is 0 return a null quotient (undefined)
 		if(divisor.getFirst() == 0)
 			return quotient;
 		//If divisor is 1 return copy of dividend
-		else if (divisor.getFirst() == 1)
+		else if (divisor.compareTo(identity) == 0)
 			return new APInt(this);
 		//Returns quotient as zero if divisor is greater than this int
 		else if (divisor.compareTo(this) > 0)
@@ -712,6 +721,14 @@ public class APInt
 		//The result is represented as the quotient
 		while(dynamicDividend.getCurrent() != null)
 		{
+			//Remove's First digit if it is 0 followed by non-zero digits
+			dynamic.setCurrent(1);
+			while(dynamic.getFirst() == 0 && dynamic.getCurrent() != null)
+			{
+				dynamic.removeFirst();
+				dynamic.nextCurrent();
+			}
+
 			int count = 0; //Set quotient of dynamic and divisor to zero
 			//Update count till dynamic is less than divisor
 			while(dynamic.compareTo(divisor) >= 0)
@@ -719,8 +736,7 @@ public class APInt
 				dynamic = dynamic.subtract(dynamicDivisor);
 				count++;
 			}
-			System.out.println(dynamic);
-			System.out.println(count);
+
 			//Remove null tail of dynamic if count is not zero.
 			if(count != 0)
 				dynamic.removeLast();
@@ -730,7 +746,7 @@ public class APInt
 			dynamic.removeLast();
 			dynamic.addLast(dynamicDividend.getCurrent());
 			dynamic.addLast(null);
-			
+
 			//Add count to quotient	
 			quotient.addLast(count);
 			
@@ -788,14 +804,16 @@ public class APInt
 		if(divisor.compareTo(new APInt(1)) == 0)
 			return new APInt(0);
 
-		//Returns GCD as 1 if divisor is 0
-		if(divisor.getFirst() == 0)
-			return new APInt(1);
+		//Returns remainder as 0 if divisor is 0
+		if(divisor.compareTo(new APInt(0)) == 0)
+		{
+			return new APInt(0);
+		}
 		
 		//Returns the remainder as 1 if the divisor is equal to this APInt
-		if (divisor.compareTo(this) >= 0)
+		if (divisor.compareTo(this) == 0)
 		{
-			remainder.addFirst(1);
+			remainder.addFirst(0);
 			return remainder;
 		}
 
@@ -842,6 +860,14 @@ public class APInt
 		//The result is represented as the quotient
 		while(dynamicDividend.getCurrent() != null)
 		{
+			//Remove's First digit if it is 0 followed by non-zero digits
+			dynamic.setCurrent(1);
+			while(dynamic.getFirst() == 0 && dynamic.getCurrent() != null)
+			{
+				dynamic.removeFirst();
+				dynamic.nextCurrent();
+			}
+
 			//Update count till dynamic is less than divisor
 			while(dynamic.compareTo(divisor) > 0)
 			{

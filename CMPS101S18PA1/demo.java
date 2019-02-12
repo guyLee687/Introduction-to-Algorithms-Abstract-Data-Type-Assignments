@@ -1,4 +1,4 @@
-
+import java.io.*; //For PrintWriter class
 
 //Programmer: Jeffrey Wang 
 //CruzID: 1659820
@@ -6,13 +6,15 @@
 //Class: COMPS-101B (D.Bailey)
 
 /**********************************************************************************
-Programming Assignment 1: APInt Class (Abstract Data Type)
-
+Programming Assignment 1: Demo -- Insures that the ADT's are working 
+correctly is working correctly
+It also writes 1000! in a file called BigFactorial.txt
 ***********************************************************************************/
 
 public class demo
 {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException
+	{
 
 		APInt num0 = new APInt();
 		APInt num1 = new APInt(3141592.65897);
@@ -89,16 +91,16 @@ public class demo
 		System.out.println("Product: " + num2.multiply(num3));
 		System.out.println();
 
-		System.out.println("num1 / num2_5: "); 
-		System.out.println("Quotient: " + num1.divide(num2_5));
+		System.out.println("num2_5 / num1: "); 
+		System.out.println("Quotient: " + num2_5.divide(num1));
 		System.out.println();
 				
-		System.out.println("num1 / num2: "); 
-		System.out.println("Quotient: " + num1.divide(num2));
+		System.out.println("num2 / num1: "); 
+		System.out.println("Quotient: " + num2.divide(num1));
 		System.out.println();
 		
-		System.out.println("num2 / num2_5: "); 
-		System.out.println("Quotient: " + num2.divide(num2_5));
+		System.out.println("num2_5 / num2: "); 
+		System.out.println("Quotient: " + num2_5.divide(num2));
 		System.out.println();
 		
 		System.out.println("num2 / num3: "); 
@@ -151,15 +153,30 @@ public class demo
 		System.out.println("Quotient:\n" + frac3.divide(frac4));
 		System.out.println();
 
-
+		PrintWriter bigfactorial = new PrintWriter("BigFactorial.txt");
 		//ExtraCredit Problem:
 		APInt factorial = new APInt(1);
 		for(int i = 2; i <= 1000; i++)
 		{
 			factorial = factorial.multiply(new APInt(i));
 		}
-		System.out.println(factorial);
-
-
+		
+		//AutoWrap factorial by length of 20 characters
+		char[] digits = factorial.toString().toCharArray();
+		StringBuilder write = new StringBuilder();	
+		write.append("This is 1000!:\n");
+		int count = 0;
+		for(char dig: digits)
+		{
+			write.append(dig);
+			count++;
+			if(count > 20)
+			{
+				write.append("\n");
+				count = 0;
+			}
+		}
+		bigfactorial.println(write.toString());
+		bigfactorial.close();
 	}
 }

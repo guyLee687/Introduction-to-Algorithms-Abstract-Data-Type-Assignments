@@ -1,0 +1,66 @@
+
+Approach: 
+My intial approach to the problem involved implementing a LinkedList inorder to store the positional digits of my ADTs.
+This is due to the fact that, I realized my methods of structuring the ADT and performing operations on them would involve 
+many insertions in both the first and last element. A LinkedList's dynamic structure allowed this possibility without having to recreate
+and copy the elements like an arraylist would. As a result, this would optimize the running time of creating and performing arithmetic operations
+on my ADTs and offered more fluidity in terms of how I perform my operations.
+
+In terms developing the methods for my ADTs I used standard arithmetic conventions used by an anolog. In terms of the division method, '
+I used exhaustive subtraction algorithm to determine the positional digits of the quotient. I also used Euclid's algorithm for finding the GCD 
+of my APRat, applying my own modulus and divison methods, in order to reduce my fractions.
+
+Many of the answers were checked with the following online Integer calculator: 
+http://www.javascripter.net/math/calculators/100digitbigintcalculator.htm
+
+
+Commit History:
+Jeffrey@LAPTOP-52K1L0AJ MINGW64 ~/Desktop/CMPS101S18PA (master)
+commit 5f301923cdb65c1e587b888d56bc8506ffb4dc6c (HEAD -> master, origin/master)
+Author: jwang358 <jwang358@ucsc.edu>
+Date:   Tue Jan 29 12:41:21 2019 -0800
+
+    Commented and debugged everything
+
+commit ce89d71454882c0b83eaa70f5bbceab0889b5430
+Author: jwang358 <jwang358@ucsc.edu>
+Date:   Thu Jan 24 18:42:30 2019 -0800
+
+    Got Add, Subtract, and Multiply to work
+
+commit ede338939ea378152ff8b3cca18290757af9f0f7
+Author: jwang358 <jwang358@ucsc.edu>
+Date:   Thu Jan 24 00:49:16 2019 -0800
+
+    Debugged and compiled APInt and APRat
+
+commit 4858ab1cba9fac11c7957ce46ceb814379fa2174
+Author: jwang358 <jwang358@ucsc.edu>
+Date:   Wed Jan 23 23:34:56 2019 -0800
+
+    Finished APInt and APRat
+
+commit 4c6bb5ad41cb4d6b5d9c7ffff52ac7227aa4d0b8
+Author: jwang358 <jwang358@ucsc.edu>
+Date:   Wed Jan 23 01:51:46 2019 -0800
+
+    Finshed raw code for APint
+
+commit 3616121a444362eee559b4bb99e0de5ece510e48
+Author: jwang358 <jwang358@ucsc.edu>
+Date:   Sat Jan 12 13:53:48 2019 -0800
+
+    Updated LinkedList skeletal structure for ADT and worked on add function
+
+commit b27879c5e68bd10228c0a4fa9d7d066173ecffe3 (testing)
+Author: jwang358 <jwang358@ucsc.edu>
+Date:   Sat Jan 12 11:46:06 2019 -0800
+
+    Added skeleton Structure For Storing 'Arbitrary Integer Precision Types' inLinkedList
+
+commit 9253c9db5fa8786464cd4a6a96bc4aa519f9d23e (test.idea)
+Author: jwang358 <jwang358@ucsc.edu>
+Date:   Thu Jan 10 13:30:14 2019 -0800
+
+    Created Initial file structure \n
+(END)
