@@ -1,0 +1,24 @@
+My approach: 
+
+I focus a good portion of the project learning C's syntax, primarily on how data structures are implemented and C, 
+designed my ADT similar to the First Assignment (using an Doubly Linked List). Since this was my first program in C, I decided to watch several tutorials C's syntax which took up a few days. I then read up on how to implement Abstract Data Types in C with special emphasis on pointers. I also figured out through a few hours of debugging that by specifically casting an alias on "typedef struct Elea * APInt" actually hides from the data structure from main. This is demostrated when I this:
+
+ gcc APInt.h APInt.c demo.c
+demo.c: In function ‘main’:
+demo.c:34:29: error: dereferencing pointer to incomplete type ‘struct Elea’
+  printf("%d\n", (*number_1) -> head -> value);
+
+The following are tutorial's I utilized in order to build my code (Source):
+ - https://www.youtube.com/watch?v=SPHcwzn6Jds&index=45&list=PLZ1QII7yudbdFfKY1eKV3x_bag04AMPJq (series)
+- https://www.edn.com/electronics-blogs/embedded-basics/4441661/5-simple-steps-to-create-an-abstract-data-type-in-C
+- https://www.youtube.com/watch?v=rk2fK2IIiiQ (series)
+- https://www.youtube.com/watch?v=23mp8IUA6z4&list=LLuaXeIie13-3OwBQdcNIjKQ
+
+The following are people how helped me debug the program: 
+- Alan Antonio Peral Ortiz
+- Tony Dang (Senior)
+- Hoa Nguyen
+- Online forum
+
+
+

@@ -1,186 +1,58 @@
 
-/*
-CREATED: 2/11/19
+//Programmer: Jeffrey Wang 
+//CruzID: 1659820
+//Data: 02.13.19
+//Class: COMPS-101B (D.Bailey)
+
+/**********************************************************************************
+Programming Assignment 2: APInt Header -- Creates an interface for the APInt
+
+CREATED: 2/11/19 12:23 P.M
+Edit: 2/11/19 10:19 P.M. -- Finsished Implementation of LInked List
+Edit 2/12/19 2:14 P.M -- Finsished Implementation of adder and subtractor.
+Edit: 2/15/19 1:17 A.M -- Finished Documentation for all files 
 LinkedList Tutorial by  Jonathan Engelsma 
 "Learning to Program in C " - tutorial
-*/
+***********************************************************************************/
+
+#ifndef APINT_Li
+#define APINT_Li
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <stdbool.h>
 
-typedef struct Node {
-	
-	int value;
-	struct Node *next;
-	struct Node *prev;
+/*Hides Ele with APInt alias*/
+typedef struct Elea * APInt;
 
-} Node;
 
-typedef struct Ele
-{
-	int sign;
-	struct Node *head;
-	struct Node *tail;
-	struct Node *current;
+/*Adds digit to the top of the list*/
+void Add_Digit_First(APInt *list, int value);
+/*Adds digits to the bottom of the list*/
+void Add_Digit_Last(APInt *list, int value);
 
-}Ele;
 
-/*Adds value to digit*/
-void Add_Digit_First(Ele *list, int value)
-{ 
-	Node new_digit = {value, NULL, NULL};
-	if(list -> head == NULL)
-	{
-		list -> head = &new_digit;
-		list -> tail = &new_digit;
-	}
-	else
-	{
-		Node *temp = list -> head;
-		list -> head = &new_digit;
-		list -> head -> next = temp;
-		temp -> prev = list -> head;
-	}
-}
+/*Intializes a zero number */
+APInt* initi_APInt(void);
 
-void Add_Digit_Last(Ele *list, int value)
-{ 
-	Node new_digit = {value, NULL, NULL};
-	if(list -> tail == NULL)
-	{
-		list -> head = &new_digit;
-		list -> tail = &new_digit;
-	}
-	else
-	{
-		Node *temp = list -> tail;
-		list -> tail = &new_digit;
-		list -> tail -> prev = temp;
-		temp -> next = list -> tail;
-	}
-}
+/*Intializes a APInt with string numerics */
+APInt* initi_APInt_String(char number[]);
 
-/*Intializes a zero element LinkedList*/
-Ele initi_APInt(void)
-{
-	Ele *number;
-	number -> head = NULL;
-	number -> tail = NULL;
-	return *number;
-}
+/*Intializes a APInt with integer type */
+APInt* initi_APInt_Int(int number);
 
-Ele initi_APInt_String(char number[])
-{
-	Ele list = {1, NULL, NULL, NULL};
-	char* str_ref;
-	if((number[0] == '+') || number[0] == '-')
-	{
-		if(number[0] == '-')
-		{
-			list.sign = -1;
-		}
-		str_ref = &number[1];
-	}
-	else 
-		str_ref = number;
+/*Free's up heap space after structure is no longer needed*/
+void CleanUp(APInt *list);
 
-	for (int i = 0; i < strlen(number); i++)
-	{
-		Add_Digit_First(&list, number[i]);
-	}
-	return list;
-}
+/*Prints values in structure*/
+void print(APInt* list);
 
-Ele initi_APInt_Int(int number)
-{
-	Ele list = {1, NULL, NULL, NULL};
-	if(number < 0)
-	{
-		list.sign = -1;
-		number *= -1;
-	}
+/*Adds two APInt numbers and returns the address*/
+APInt* add(APInt* adder, APInt* addend);
 
-	int remainder;
-	while (number != 0)
-	{
-		Add_Digit_Last(&list, (number % 10));
-		number /= 10;
-	}
-	return list;
-}
+/*Subtracts two APInt numbers and returns the address*/
+APInt* subtract(APInt* subtractor_1, APInt* subtractor_2);
 
-void CleanUp(Ele *list){
-	Node *freeMe = list -> head;
-	Node *holdMe = NULL;
-
-	while(freeMe != NULL)
-	{
-		holdMe = freeMe -> next;
-		free(freeMe);
-		freeMe = holdMe;
-	}
-}
-
-void print(Ele *list)
-{
-	Ele *dec;
-	dec -> head = list -> head;
-
-	if(list -> sign == 1)
-		printf("%s\n", "+" );
-	else
-		printf("%s\n", "-");
-	
-	while(dec -> head != NULL)
-	{
-		printf("%d", dec -> head -> value);
-		dec -> head = dec -> head -> next;
-	}
-	printf("\n");
-}
-
-bool compareTo(Ele *list1, Ele *list2)
-{
-	Node *current_1 = list1 -> head;
-	Node *current_2 = list2 -> head;
-
-	while(current_1 != NULL || current_2 != NULL)
-	{
-		if(current_1 == NULL && current_2 != NULL)
-			return false;
-		else if(current_1 != NULL && current_2 == NULL)
-			return true;
-		
-		current_1 = current_1 -> next;
-		current_2 = current_2 -> next;
-	}
-
-	current_1 = list1 -> head;
-	current_2 = list2 -> head;
-	while(current_1 != NULL)
-	{
-		if(current_1 -> value > current_2 -> value)
-			return true;
-
-		current_1 = current_1 -> next;
-		current_2 = current_2 -> next;
-	}
-	return false;
-}
-
-Ele add(Ele *adder, Ele *addend)
-{
-
-}
-
-Ele subtract(Ele *minuend, Ele *subtrahend)
-{
-
-}
-
-Ele multiply(Ele *factor_1, Ele *factor_2)
-{
-
-}
+/*Mulitplies two APInt numbers and returns the address*/
+APInt* multiply(APInt* factor_1, APInt* factor_2);
+#endif

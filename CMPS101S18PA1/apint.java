@@ -621,6 +621,7 @@ public class APInt
 				tempPlaceHolder.addLast(0);
 				placeHolder.nextCurrent();
 			}
+			
 			//Reassigns tail to null
 			tempPlaceHolder.addLast(null);
 

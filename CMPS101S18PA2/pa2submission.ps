@@ -1,0 +1,2534 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 18 36 577 806
+%%Title: Enscript Output
+%%Creator: GNU Enscript 1.6.5.90
+%%CreationDate: Fri Feb 15 02:08:29 2019
+%%Orientation: Portrait
+%%Pages: (atend)
+%%DocumentMedia: A4 595 842 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6.5 90
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88591 1.6.5 90
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclamdown   	/cent         	/sterling     	
+/currency     	/yen          	/brokenbar    	/section      	
+/dieresis     	/copyright    	/ordfeminine  	/guillemotleft	
+/logicalnot   	/hyphen       	/registered   	/macron       	
+/degree       	/plusminus    	/twosuperior  	/threesuperior	
+/acute        	/mu           	/paragraph    	/bullet       	
+/cedilla      	/onesuperior  	/ordmasculine 	/guillemotright	
+/onequarter   	/onehalf      	/threequarters	/questiondown 	
+/Agrave       	/Aacute       	/Acircumflex  	/Atilde       	
+/Adieresis    	/Aring        	/AE           	/Ccedilla     	
+/Egrave       	/Eacute       	/Ecircumflex  	/Edieresis    	
+/Igrave       	/Iacute       	/Icircumflex  	/Idieresis    	
+/Eth          	/Ntilde       	/Ograve       	/Oacute       	
+/Ocircumflex  	/Otilde       	/Odieresis    	/multiply     	
+/Oslash       	/Ugrave       	/Uacute       	/Ucircumflex  	
+/Udieresis    	/Yacute       	/Thorn        	/germandbls   	
+/agrave       	/aacute       	/acircumflex  	/atilde       	
+/adieresis    	/aring        	/ae           	/ccedilla     	
+/egrave       	/eacute       	/ecircumflex  	/edieresis    	
+/igrave       	/iacute       	/icircumflex  	/idieresis    	
+/eth          	/ntilde       	/ograve       	/oacute       	
+/ocircumflex  	/otilde       	/odieresis    	/divide       	
+/oslash       	/ugrave       	/uacute       	/ucircumflex  	
+/udieresis    	/yacute       	/thorn        	/ydieresis    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 10 10 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [595 842] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-simple 1.6.5 90
+
+/do_header {	% print default simple header
+  gsave
+    d_header_x d_header_y HFpt_h 3 div add translate
+
+    HF setfont
+    user_header_p {
+      5 0 moveto user_header_left_str show
+
+      d_header_w user_header_center_str stringwidth pop sub 2 div
+      0 moveto user_header_center_str show
+
+      d_header_w user_header_right_str stringwidth pop sub 5 sub
+      0 moveto user_header_right_str show
+    } {
+      5 0 moveto fname show
+      45 0 rmoveto fmodstr show
+      45 0 rmoveto pagenumstr show
+    } ifelse
+
+  grestore
+} def
+%%EndResource
+/d_page_w 559 def
+/d_page_h 770 def
+/d_header_x 0 def
+/d_header_y 755 def
+/d_header_w 559 def
+/d_header_h 15 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 559 def
+/d_footer_h 0 def
+/d_output_w 559 def
+/d_output_h 755 def
+/cols 1 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 1 def
+/fname (pa2submission.txt) def
+/fdir (.) def
+/ftail (pa2submission.txt) def
+% User defined strings:
+/fmodstr (Fri Feb 15 02:06:25 2019) def
+/pagenumstr (1) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 742 M
+(Script started on 2019-02-15 02:04:18-0800) s
+5 731 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2\\007roo) s
+5 720 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2# \\007exit) s
+497 720 M
+() s
+491 720 M
+() s
+485 720 M
+() s
+479 720 M
+(cat README.t) s
+5 709 M
+(xt ) s
+17 709 M
+() s
+11 709 M
+() s
+5 709 M
+() s
+-1 709 M
+() s
+-7 709 M
+() s
+-13 709 M
+() s
+-19 709 M
+() s
+-25 709 M
+() s
+-31 709 M
+() s
+-37 709 M
+() s
+-43 709 M
+() s
+-49 709 M
+() s
+-55 709 M
+() s
+-61 709 M
+() s
+-67 709 M
+(exit\\033[K) s
+-13 709 M
+() s
+-19 709 M
+() s
+-25 709 M
+() s
+-31 709 M
+(cad NoteToGrader.txt ) s
+89 709 M
+() s
+83 709 M
+() s
+77 709 M
+() s
+71 709 M
+() s
+65 709 M
+() s
+59 709 M
+() s
+53 709 M
+() s
+47 709 M
+() s
+41 709 M
+() s
+35 709 M
+() s
+29 709 M
+() s
+23 709 M
+() s
+17 709 M
+() s
+11 709 M
+() s
+5 709 M
+() s
+-1 709 M
+() s
+-7 709 M
+() s
+-13 709 M
+() s
+-19 709 M
+(\\033[6Pt README\\033[C\\033[C\\033[C\\033[C\\033[C) s
+245 709 M
+() s
+239 709 M
+() s
+233 709 M
+() s
+227 709 M
+() s
+221 709 M
+() s
+215 709 M
+() s
+209 709 M
+() s
+203 709 M
+() s
+197 709 M
+() s
+191 709 M
+() s
+185 709 M
+() s
+179 709 M
+() s
+173 709 M
+() s
+167 709 M
+() s
+161 709 M
+(\\033[10Pls -1) s
+233 709 M
+() s
+227 709 M
+() s
+221 709 M
+() s
+215 709 M
+() s
+209 709 M
+(\\033[2Ppwd) s
+5 698 M
+(/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2) s
+5 687 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2\\007roo) s
+5 676 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2# pwd) s
+467 676 M
+() s
+461 676 M
+() s
+455 676 M
+(exit) s
+473 676 M
+() s
+467 676 M
+() s
+461 676 M
+() s
+455 676 M
+(cat README.txt ) s
+539 676 M
+() s
+533 676 M
+() s
+527 676 M
+() s
+521 676 M
+() s
+515 676 M
+() s
+509 676 M
+() s
+503 676 M
+() s
+497 676 M
+() s
+491 676 M
+() s
+485 676 M
+() s
+479 676 M
+() s
+473 676 M
+() s
+467 676 M
+() s
+461 676 M
+() s
+455 676 M
+(exit\\033[K) s
+509 676 M
+() s
+503 676 M
+() s
+497 676 M
+() s
+491 676 M
+(cad NoteTo) s
+5 665 M
+(Grader.txt ) s
+65 665 M
+() s
+59 665 M
+() s
+53 665 M
+() s
+47 665 M
+() s
+41 665 M
+() s
+35 665 M
+() s
+29 665 M
+() s
+23 665 M
+() s
+17 665 M
+() s
+11 665 M
+() s
+5 665 M
+() s
+-1 665 M
+() s
+-7 665 M
+() s
+-13 665 M
+() s
+-19 665 M
+() s
+-25 665 M
+() s
+-31 665 M
+() s
+-37 665 M
+() s
+-43 665 M
+(\\033[6Pt README\\033[C\\033[C\\033[C\\033[C\\033[C) s
+221 665 M
+() s
+215 665 M
+() s
+209 665 M
+() s
+203 665 M
+() s
+197 665 M
+() s
+191 665 M
+() s
+185 665 M
+() s
+179 665 M
+() s
+173 665 M
+() s
+167 665 M
+() s
+161 665 M
+() s
+155 665 M
+() s
+149 665 M
+() s
+143 665 M
+() s
+137 665 M
+(\\033[10Pls -1) s
+5 654 M
+(\\033[0m\\033[01;32mAPInt.c\\033[0m) s
+5 643 M
+(\\033[01;32mAPInt.h\\033[0m) s
+5 632 M
+(\\033[01;32mNoteToGrader.txt\\033[0m) s
+5 621 M
+(\\033[01;32mREADME.txt\\033[0m) s
+5 610 M
+(\\033[01;32mdemo.c\\033[0m) s
+5 599 M
+(\\033[01;32mpa2submission.txt\\033[0m) s
+5 588 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2\\007roo) s
+5 577 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2# ls -1) s
+479 577 M
+() s
+473 577 M
+() s
+467 577 M
+() s
+461 577 M
+() s
+455 577 M
+(\\033[2Ppwd) s
+509 577 M
+() s
+503 577 M
+() s
+497 577 M
+(exit) s
+515 577 M
+() s
+509 577 M
+() s
+503 577 M
+() s
+497 577 M
+(cat READM) s
+5 566 M
+(E.txt ) s
+35 566 M
+() s
+29 566 M
+() s
+23 566 M
+() s
+17 566 M
+() s
+11 566 M
+() s
+5 566 M
+() s
+-1 566 M
+() s
+-7 566 M
+() s
+-13 566 M
+() s
+-19 566 M
+() s
+-25 566 M
+() s
+-31 566 M
+() s
+-37 566 M
+() s
+-43 566 M
+() s
+-49 566 M
+(exit\\033[K) s
+5 566 M
+() s
+-1 566 M
+() s
+-7 566 M
+() s
+-13 566 M
+(cat README.txt ) s
+5 555 M
+(C:\\Users\\Jeffrey\\Desktop\\CMPS101S18PA\\CMPS101S18PA2) s
+5 544 M
+(APInt.h -> Header file which declares the functions that will be used in my data type and h) s
+5 533 M
+(ides the strucuter by) s
+5 522 M
+(        assigning a pointer to the structure.) s
+5 500 M
+(APInt.c -> Source file which implements the functions in APInt.h. ) s
+5 478 M
+(Demo.c -> Test file for APInt) s
+5 456 M
+(NoteToGrader.txt -> A short statement about my approach to the problem.) s
+5 434 M
+(README.txt -> List of files.\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS1) s
+5 423 M
+(01S18PA/CMPS101S18PA2\\007root@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMP) s
+5 412 M
+(S101S18PA2# cat README.txt ) s
+161 412 M
+() s
+155 412 M
+() s
+149 412 M
+() s
+143 412 M
+() s
+137 412 M
+() s
+131 412 M
+() s
+125 412 M
+() s
+119 412 M
+() s
+113 412 M
+() s
+107 412 M
+() s
+101 412 M
+() s
+95 412 M
+() s
+89 412 M
+() s
+83 412 M
+() s
+77 412 M
+(\\033[10Pls -1) s
+149 412 M
+() s
+143 412 M
+() s
+137 412 M
+() s
+131 412 M
+() s
+125 412 M
+(\\033[2Ppwd) s
+179 412 M
+() s
+173 412 M
+() s
+167 412 M
+(exit) s
+185 412 M
+() s
+179 412 M
+() s
+173 412 M
+() s
+167 412 M
+(\\033[1Ppwd) s
+221 412 M
+() s
+215 412 M
+() s
+209 412 M
+(exit) s
+227 412 M
+() s
+221 412 M
+() s
+215 412 M
+() s
+209 412 M
+(cat README.txt ) s
+293 412 M
+() s
+287 412 M
+() s
+281 412 M
+() s
+275 412 M
+() s
+269 412 M
+() s
+263 412 M
+() s
+257 412 M
+() s
+251 412 M
+() s
+245 412 M
+() s
+239 412 M
+() s
+233 412 M
+() s
+227 412 M
+() s
+221 412 M
+() s
+215 412 M
+() s
+209 412 M
+(exit\\033[K) s
+263 412 M
+() s
+257 412 M
+() s
+251 412 M
+() s
+245 412 M
+(cat README.txt ) s
+329 412 M
+() s
+323 412 M
+(\\033[1P ) s
+365 412 M
+() s
+359 412 M
+(\\033[1P ) s
+401 412 M
+() s
+395 412 M
+(\\033[1P ) s
+437 412 M
+() s
+431 412 M
+(\\033[1P ) s
+473 412 M
+() s
+467 412 M
+(\\033[1P ) s
+509 412 M
+() s
+503 412 M
+(\\033[1P ) s
+545 412 M
+() s
+539 412 M
+() s
+5 401 M
+(\\033[1P ) s
+47 401 M
+() s
+41 401 M
+(\\033[1P ) s
+83 401 M
+() s
+77 401 M
+(\\033[1P ) s
+119 401 M
+() s
+113 401 M
+(\\033[1P ) s
+155 401 M
+(\\033[K) s
+185 401 M
+(\\033[C ) s
+221 401 M
+(N ) s
+227 401 M
+(oteToGrader.txt ) s
+5 390 M
+(My approach: ) s
+5 368 M
+(I focus a good portion of the project learning C's syntax, primarily on how data structures) s
+5 357 M
+( are implemented and C, ) s
+5 346 M
+(designed my ADT similar to the First Assignment \(using an Doubly Linked List\). Since this w) s
+5 335 M
+(as my first program in C, I decided to watch several tutorials C's syntax which took up a f) s
+5 324 M
+(ew days. I then read up on how to implement Abstract Data Types in C with special emphasis ) s
+5 313 M
+(on pointers. I also figured out through a few hours of debugging that by specifically casti) s
+5 302 M
+(ng an alias on "typedef struct Elea * APInt" actually hides from the data structure from ma) s
+5 291 M
+(in. This is demostrated when I this:) s
+5 269 M
+( gcc APInt.h APInt.c demo.c) s
+5 258 M
+(demo.c: In function \\221main\\222:) s
+5 247 M
+(demo.c:34:29: error: dereferencing pointer to incomplete type \\221struct Elea\\222) s
+5 236 M
+(  printf\("%d\\n", \(*number_1\) -> head -> value\);) s
+5 214 M
+(The following are tutorial's I utilized in order to build my code \(Source\):) s
+5 203 M
+( - https://www.youtube.com/watch?v=SPHcwzn6Jds&index=45&list=PLZ1QII7yudbdFfKY1eKV3x_bag04A) s
+5 192 M
+(MPJq \(series\)) s
+5 181 M
+(- https://www.edn.com/electronics-blogs/embedded-basics/4441661/5-simple-steps-to-create-an) s
+5 170 M
+(-abstract-data-type-in-C) s
+5 159 M
+(- https://www.youtube.com/watch?v=rk2fK2IIiiQ \(series\)) s
+5 148 M
+(- https://www.youtube.com/watch?v=23mp8IUA6z4&list=LLuaXeIie13-3OwBQdcNIjKQ) s
+5 126 M
+(The following are people how helped me debug the program: ) s
+5 115 M
+(- Alan Antonio Peral Ortiz) s
+5 104 M
+(- Tony Dang \(Senior\)) s
+5 93 M
+(- Hoa Nguyen) s
+5 82 M
+(- Online forum) s
+5 38 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2\\007roo) s
+5 27 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2# cat NoteToGrader) s
+5 16 M
+(.txt ) s
+29 16 M
+() s
+23 16 M
+() s
+17 16 M
+() s
+11 16 M
+() s
+5 16 M
+() s
+-1 16 M
+() s
+-7 16 M
+() s
+-13 16 M
+() s
+-19 16 M
+() s
+-25 16 M
+() s
+-31 16 M
+() s
+-37 16 M
+() s
+-43 16 M
+() s
+-49 16 M
+() s
+-55 16 M
+() s
+-61 16 M
+() s
+-67 16 M
+(\\033[6PREADME\\033[C\\033[C\\033[C\\033[C\\033[Cc) s
+191 16 M
+(\\033[K) s
+221 16 M
+(\\033[K) s
+251 16 M
+(\\033[K) s
+281 16 M
+(\\033[K) s
+311 16 M
+(\\033[K) s
+341 16 M
+(\\033[K) s
+371 16 M
+(\\033[K) s
+401 16 M
+(\\033[K) s
+431 16 M
+(\\033[K) s
+461 16 M
+(\\033[K) s
+491 16 M
+(\\033[K) s
+521 16 M
+(\\033[) s
+5 5 M
+(KA\\007PInt.c) s
+71 5 M
+(\\033[Kh) s
+_R
+S
+%%Page: (2) 2
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 2 def
+/fname (pa2submission.txt) def
+/fdir (.) def
+/ftail (pa2submission.txt) def
+% User defined strings:
+/fmodstr (Fri Feb 15 02:06:25 2019) def
+/pagenumstr (2) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 731 M
+(//Programmer: Jeffrey Wang ) s
+5 720 M
+(//CruzID: 1659820) s
+5 709 M
+(//Data: 02.13.19) s
+5 698 M
+(//Class: COMPS-101B \(D.Bailey\)) s
+5 676 M
+(/**********************************************************************************) s
+5 665 M
+(Programming Assignment 2: APInt Header -- Creates an interface for the APInt) s
+5 643 M
+(CREATED: 2/11/19 12:23 P.M) s
+5 632 M
+(Edit: 2/11/19 10:19 P.M. -- Finsished Implementation of LInked List) s
+5 621 M
+(Edit 2/12/19 2:14 P.M -- Finsished Implementation of adder and subtractor.) s
+5 610 M
+(Edit: 2/15/19 1:17 A.M -- Finished Documentation for all files ) s
+5 599 M
+(LinkedList Tutorial by  Jonathan Engelsma ) s
+5 588 M
+("Learning to Program in C " - tutorial) s
+5 577 M
+(***********************************************************************************/) s
+5 555 M
+(#ifndef APINT_Li) s
+5 544 M
+(#define APINT_Li) s
+5 522 M
+(#include <stdio.h>) s
+5 511 M
+(#include <stdlib.h>) s
+5 500 M
+(#include <stdbool.h>) s
+5 478 M
+(/*Hides Ele with APInt alias*/) s
+5 467 M
+(typedef struct Elea * APInt;) s
+5 434 M
+(/*Adds digit to the top of the list*/) s
+5 423 M
+(void Add_Digit_First\(APInt *list, int value\);) s
+5 412 M
+(/*Adds digits to the bottom of the list*/) s
+5 401 M
+(void Add_Digit_Last\(APInt *list, int value\);) s
+5 368 M
+(/*Intializes a zero number */) s
+5 357 M
+(APInt* initi_APInt\(void\);) s
+5 335 M
+(/*Intializes a APInt with string numerics */) s
+5 324 M
+(APInt* initi_APInt_String\(char number[]\);) s
+5 302 M
+(/*Intializes a APInt with integer type */) s
+5 291 M
+(APInt* initi_APInt_Int\(int number\);) s
+5 269 M
+(/*Free's up heap space after structure is no longer needed*/) s
+5 258 M
+(void CleanUp\(APInt *list\);) s
+5 236 M
+(/*Prints values in structure*/) s
+5 225 M
+(void print\(APInt* list\);) s
+5 203 M
+(/*Adds two APInt numbers and returns the address*/) s
+5 192 M
+(APInt* add\(APInt* adder, APInt* addend\);) s
+5 170 M
+(/*Subtracts two APInt numbers and returns the address*/) s
+5 159 M
+(APInt* subtract\(APInt* subtractor_1, APInt* subtractor_2\);) s
+5 137 M
+(/*Mulitplies two APInt numbers and returns the address*/) s
+5 126 M
+(APInt* multiply\(APInt* factor_1, APInt* factor_2\);) s
+5 115 M
+(#endif) s
+5 104 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2\\007roo) s
+5 93 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2# cat APInt.h) s
+515 93 M
+(\\033[K) s
+5 82 M
+(c) s
+5 49 M
+(//Programmer: Jeffrey Wang ) s
+5 38 M
+(//CruzID: 1659820) s
+5 27 M
+(//Data: 02.13.19) s
+5 16 M
+(//Class: COMPS-101B \(D.Bailey\)) s
+_R
+S
+%%Page: (3) 3
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 3 def
+/fname (pa2submission.txt) def
+/fdir (.) def
+/ftail (pa2submission.txt) def
+% User defined strings:
+/fmodstr (Fri Feb 15 02:06:25 2019) def
+/pagenumstr (3) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 742 M
+(/**********************************************************************************) s
+5 731 M
+(Programming Assignment 2: APInt Class \(Abstract Data Type\)) s
+5 720 M
+(An arbitrary precision Integer which has no fixed limit to the size of ) s
+5 709 M
+(the number. It implements a LinkedList where the nodes designates the positional) s
+5 698 M
+(value of the digits. It contains the following methods) s
+5 676 M
+(\342\\200\242a default constructor) s
+5 665 M
+(\342\\200\242a constructor which uses a string, made up of optional{+,-}) s
+5 654 M
+(followed bya string of characters from{0,1,2,3,4,5,6,7,8,9}as an input argument.) s
+5 643 M
+(\342\\200\242a constructor for conversion of ints.) s
+5 632 M
+(\342\\200\242a method for printing.) s
+5 621 M
+(\342\\200\242methods for addition, subtraction, multiplication ) s
+5 599 M
+(CREATED: 2/11/19 12:23 P.M) s
+5 588 M
+(Edit: 2/11/19 10:19 P.M. -- Finsished Implementation of LInked List) s
+5 577 M
+(Edit: 2/12/19 2:14 P.M -- Finsished Implementation of adder and subtractor.) s
+5 566 M
+(Edit: 2/121 ) s
+5 555 M
+(LinkedList Tutorial by  Jonathan Engelsma ) s
+5 544 M
+("Learning to Program in C " - tutorial) s
+5 533 M
+(***********************************************************************************/) s
+5 500 M
+(#include "APInt.h") s
+5 489 M
+(#include <string.h>) s
+5 467 M
+(/*Defines inner structure Node type for LinkedList*/) s
+5 456 M
+(typedef struct Nodea {) s
+5 445 M
+(        ) s
+5 434 M
+(        int value;                                      //Value of Node) s
+5 423 M
+(        struct Nodea *next;                     //Next Node) s
+5 412 M
+(        struct Nodea *prev;                     //Previous Node) s
+5 390 M
+(} Node;) s
+5 368 M
+(/*Define's structure of LinkedList*/) s
+5 357 M
+(typedef struct Elea) s
+5 346 M
+({) s
+5 335 M
+(        int sign;                                       //Sign of APInt) s
+5 324 M
+(        struct Nodea *head;                     //Head of Node) s
+5 313 M
+(        struct Nodea *tail;                     //Tail of Node) s
+5 302 M
+(        struct Nodea *current;          //Current Node for traversal) s
+5 280 M
+(}Ele;) s
+5 258 M
+(/*Adds value to the APInt as the most signficant digit*/) s
+5 247 M
+(void Add_Digit_First\(APInt * list, int data\)) s
+5 236 M
+({ ) s
+5 225 M
+(        //Intializes and allocates memory to a Node) s
+5 214 M
+(        Node *new_digit;) s
+5 203 M
+(        new_digit = malloc\(sizeof\(Node\)\);) s
+5 192 M
+(        new_digit -> value = data;) s
+5 181 M
+(        new_digit -> next = NULL;) s
+5 170 M
+(        new_digit -> prev = NULL;) s
+5 148 M
+(        //If the LinkedList has no digits assign it as a first and have head, tail,) s
+5 137 M
+(        //And current point to it.) s
+5 126 M
+(        if\(\(*list\) -> head == NULL\)) s
+5 115 M
+(        {) s
+5 104 M
+(                \(*list\) -> head = new_digit;) s
+5 93 M
+(                \(*list\) -> tail = new_digit;) s
+5 82 M
+(                \(*list\) -> current = new_digit;) s
+5 71 M
+(        }) s
+5 60 M
+(        //Else add new value to the head) s
+5 49 M
+(        else) s
+5 38 M
+(        {) s
+5 27 M
+(                new_digit -> next = \(*list\) -> head;) s
+5 16 M
+(                \(*list\) -> head -> prev = new_digit;) s
+5 5 M
+(                \(*list\) -> head = new_digit;) s
+_R
+S
+%%Page: (4) 4
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 4 def
+/fname (pa2submission.txt) def
+/fdir (.) def
+/ftail (pa2submission.txt) def
+% User defined strings:
+/fmodstr (Fri Feb 15 02:06:25 2019) def
+/pagenumstr (4) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 742 M
+(        }) s
+5 731 M
+(}) s
+5 709 M
+(/*Adds value to the APInt as the least significant digit*/) s
+5 698 M
+(void Add_Digit_Last\(APInt * list, int data\)) s
+5 687 M
+({ ) s
+5 676 M
+(        //Intializes and allocates memory to a Node) s
+5 665 M
+(        Node *new_digit;) s
+5 654 M
+(        new_digit = malloc\(sizeof\(Node\)\);) s
+5 643 M
+(        new_digit -> value = data;) s
+5 632 M
+(        new_digit -> next = NULL;) s
+5 621 M
+(        new_digit -> prev = NULL;) s
+5 599 M
+(        //If the LinkedList has no digits assign it as a first and have head, tail,) s
+5 588 M
+(        //And current point to it.) s
+5 577 M
+(        if\(\(*list\) -> tail == NULL\)) s
+5 566 M
+(        {) s
+5 555 M
+(                \(*list\) -> head = new_digit;) s
+5 544 M
+(                \(*list\) -> tail = new_digit;) s
+5 533 M
+(                \(*list\) -> current = new_digit;) s
+5 522 M
+(        }) s
+5 511 M
+(        //Else add new value to the tail) s
+5 500 M
+(        else) s
+5 489 M
+(        {) s
+5 478 M
+(                new_digit -> prev = \(*list\) -> tail;) s
+5 467 M
+(                \(*list\) -> tail -> next = new_digit;) s
+5 456 M
+(                \(*list\) -> tail = new_digit;) s
+5 445 M
+(        }) s
+5 434 M
+(}) s
+5 412 M
+(/*This function allocates a new Ele type which is the APInt object*/) s
+5 401 M
+(void allocate_APInt \(APInt* list\)) s
+5 390 M
+({) s
+5 379 M
+(        APInt new_ele;) s
+5 368 M
+(        new_ele = malloc\(sizeof\(Ele\)\);) s
+5 357 M
+(        new_ele -> sign = 1;) s
+5 346 M
+(        new_ele -> head = NULL;) s
+5 335 M
+(        new_ele -> tail = NULL;) s
+5 324 M
+(        new_ele -> current = NULL;) s
+5 313 M
+(        \(*list\) = new_ele;) s
+5 302 M
+(}) s
+5 280 M
+(/*Intializes a zero element LinkedList*/) s
+5 269 M
+(APInt* initi_APInt\(void\)) s
+5 258 M
+({) s
+5 247 M
+(        //Allocate memory to the pointer of pointer to APInt to store the pointer) s
+5 236 M
+(        APInt *list =  malloc\(sizeof\(APInt\)\); ) s
+5 225 M
+(        allocate_APInt\(list\);) s
+5 203 M
+(        //Adds zero to the list) s
+5 192 M
+(        Add_Digit_First\(list, 0\);) s
+5 181 M
+(        return list;) s
+5 170 M
+(}) s
+5 148 M
+(/*Intializes a LinkedList with a string of digits.*/) s
+5 137 M
+(/*The sign is optional*/) s
+5 126 M
+(APInt* initi_APInt_String\(char number[]\)) s
+5 115 M
+({) s
+5 104 M
+(        /*Allocate memory to list*/) s
+5 93 M
+(        APInt *list =  malloc\(sizeof\(APInt\)\); ) s
+5 82 M
+(        allocate_APInt\(list\);) s
+5 60 M
+(        //Create a pointer to string that holds to parameter) s
+5 49 M
+(        char* str_ref;) s
+5 27 M
+(        //Check whether or not the string has a sign.) s
+5 16 M
+(        if\(\(number[0] == '+'\) || number[0] == '-'\)) s
+5 5 M
+(        {) s
+_R
+S
+%%Page: (5) 5
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 5 def
+/fname (pa2submission.txt) def
+/fdir (.) def
+/ftail (pa2submission.txt) def
+% User defined strings:
+/fmodstr (Fri Feb 15 02:06:25 2019) def
+/pagenumstr (5) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 742 M
+(                if\(number[0] == '-'\)) s
+5 731 M
+(                {) s
+5 720 M
+(                        \(*list\)->sign = -1;) s
+5 709 M
+(                }) s
+5 698 M
+(                //Return the string of digits after the sign) s
+5 687 M
+(                str_ref = &number[1];) s
+5 676 M
+(        }) s
+5 665 M
+(        else ) s
+5 654 M
+(                str_ref = number;) s
+5 632 M
+(        //Iterate the strings and store it in list) s
+5 621 M
+(        for \(int i = 0; i < strlen\(str_ref\); i++\)) s
+5 610 M
+(        {) s
+5 599 M
+(                int num =  str_ref[i] - '0';) s
+5 588 M
+(                Add_Digit_Last\(list, num\);) s
+5 577 M
+(        }) s
+5 566 M
+(        return list;) s
+5 555 M
+(}) s
+5 522 M
+(/*Initializes an APInt type with an integer input*/) s
+5 511 M
+(APInt* initi_APInt_Int\(int number\)) s
+5 500 M
+({) s
+5 489 M
+(        /*Allocates memory to the list*/) s
+5 478 M
+(        APInt *list =  malloc\(sizeof\(APInt\)\); ) s
+5 467 M
+(        allocate_APInt\(list\);) s
+5 445 M
+(        //Sets the sign of the int to a positive value) s
+5 434 M
+(        \(*list\)->sign = 1;) s
+5 423 M
+(        ) s
+5 412 M
+(        //If the integer is less than zero assign a negative sign) s
+5 401 M
+(        if\(number < 0\)) s
+5 390 M
+(                number *= -1;) s
+5 368 M
+(        //Iterate through the digits in the integer) s
+5 357 M
+(        int remainder;) s
+5 346 M
+(        while \(number != 0\)) s
+5 335 M
+(        {) s
+5 324 M
+(                Add_Digit_First\(list, \(number % 10\)\);) s
+5 313 M
+(                number /= 10;) s
+5 302 M
+(        }) s
+5 291 M
+(        return list;) s
+5 280 M
+(}) s
+5 258 M
+(/*Frees up the allocated memory*/) s
+5 247 M
+(void CleanUp\(APInt *list\)) s
+5 236 M
+({) s
+5 225 M
+(        //Assigns the Nodes in List that need to be free) s
+5 214 M
+(        Node *freeMe = \(*list\) -> head;) s
+5 203 M
+(        Node *holdMe = NULL;) s
+5 181 M
+(        //Iterate through the Nodes and frees them) s
+5 170 M
+(        while\(freeMe != NULL\)) s
+5 159 M
+(        {) s
+5 148 M
+(                holdMe = freeMe -> next;) s
+5 137 M
+(                free\(freeMe\);) s
+5 126 M
+(                freeMe = holdMe;) s
+5 115 M
+(        }) s
+5 104 M
+(        // Free the allocated memory to the Ele, and APInt\(pointer to Ele\)) s
+5 93 M
+(        free\(*list\);) s
+5 82 M
+(        free\(list\);) s
+5 71 M
+(}) s
+5 49 M
+(/* A print function for the APInt*/) s
+5 38 M
+(void print\(APInt* list\)) s
+5 27 M
+({) s
+5 16 M
+(        //Assign the current Node of APInt to head for the start of a tranversal) s
+5 5 M
+(        \(*list\) -> current = \(*list\) -> head;) s
+_R
+S
+%%Page: (6) 6
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 6 def
+/fname (pa2submission.txt) def
+/fdir (.) def
+/ftail (pa2submission.txt) def
+% User defined strings:
+/fmodstr (Fri Feb 15 02:06:25 2019) def
+/pagenumstr (6) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 742 M
+(        ) s
+5 731 M
+(        //Prints the sign) s
+5 720 M
+(        if\(\(*list\) -> sign == 1\)) s
+5 709 M
+(                printf\("%s", "+" \);) s
+5 698 M
+(        else) s
+5 687 M
+(                printf\("%s", "-"\);) s
+5 665 M
+(        //Iterate through the nodes and print the value) s
+5 654 M
+(        while\(\(*list\) -> current != NULL\)) s
+5 643 M
+(        {) s
+5 632 M
+(                printf\("%d", \(*list\) -> current -> value\);) s
+5 621 M
+(                \(*list\) -> current  = \(*list\) -> current -> next;) s
+5 610 M
+(        }) s
+5 599 M
+(        printf\("\\n"\);) s
+5 588 M
+(        ) s
+5 577 M
+(}) s
+5 555 M
+(/*Compares the value of the APInt numbers*/) s
+5 544 M
+(bool compareTo\(APInt* list1, APInt* list2\)) s
+5 533 M
+({) s
+5 522 M
+(        //Assign pointers to the list heads for transveral) s
+5 511 M
+(        Node *current_1 = \(*list1\) -> head;) s
+5 500 M
+(        Node *current_2 = \(*list2\) -> head;) s
+5 478 M
+(        //Checks whether one APInt has more digits than the other to check value) s
+5 467 M
+(        //Returns true if list1 has more digits than list2 \(vice versa.\)) s
+5 456 M
+(        while\(current_1 != NULL || current_2 != NULL\)) s
+5 445 M
+(        {) s
+5 434 M
+(                if\(current_1 == NULL && current_2 != NULL\)) s
+5 423 M
+(                        return false;) s
+5 412 M
+(                else if\(current_1 != NULL && current_2 == NULL\)) s
+5 401 M
+(                        return true;) s
+5 390 M
+(                ) s
+5 379 M
+(                current_1 = current_1 -> next;) s
+5 368 M
+(                current_2 = current_2 -> next;) s
+5 357 M
+(        }) s
+5 335 M
+(        //Reassigns transerval Nodes back to head if digits are the same) s
+5 324 M
+(        current_1 = \(*list1\) -> head;) s
+5 313 M
+(        current_2 = \(*list2\) -> head;) s
+5 291 M
+(        //Checks each digit from MSB to LSB to check value comparision) s
+5 280 M
+(        while\(current_1 != NULL\)) s
+5 269 M
+(        {) s
+5 258 M
+(                if\(current_1 -> value > current_2 -> value\)) s
+5 247 M
+(                        return true;) s
+5 225 M
+(                current_1 = current_1 -> next;) s
+5 214 M
+(                current_2 = current_2 -> next;) s
+5 203 M
+(        }) s
+5 192 M
+(        return false;) s
+5 181 M
+(}) s
+5 159 M
+(/*Predefines the subtract function for add*/) s
+5 148 M
+(APInt* subtract\(APInt* subtractor_1, APInt* subtractor_2\);) s
+5 115 M
+(/*Add Function*/) s
+5 104 M
+(APInt* add\(APInt* adder, APInt* addend\)) s
+5 93 M
+({) s
+5 82 M
+(        if \(\(*adder\) -> sign == \(*addend\) -> sign\)) s
+5 71 M
+(        {) s
+5 60 M
+(                APInt *sum;) s
+5 49 M
+(                sum = malloc\(sizeof\(APInt\)\);) s
+5 38 M
+(                allocate_APInt\(sum\);) s
+5 27 M
+(                \(*sum\) -> sign = \(*adder\) ->sign;) s
+5 5 M
+(                Ele *biggerAddend;) s
+_R
+S
+%%Page: (7) 7
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 7 def
+/fname (pa2submission.txt) def
+/fdir (.) def
+/ftail (pa2submission.txt) def
+% User defined strings:
+/fmodstr (Fri Feb 15 02:06:25 2019) def
+/pagenumstr (7) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 742 M
+(                Ele *smallerAddend;) s
+5 720 M
+(                if\(compareTo\(adder, addend\)\)) s
+5 709 M
+(                {) s
+5 698 M
+(                        biggerAddend = \(*adder\);) s
+5 687 M
+(                        smallerAddend = \(*addend\);) s
+5 676 M
+(                }) s
+5 665 M
+(                else) s
+5 654 M
+(                {) s
+5 643 M
+(                        biggerAddend = \(*addend\);) s
+5 632 M
+(                        smallerAddend = \(*adder\);) s
+5 621 M
+(                }) s
+5 599 M
+(                Node *current_1 = biggerAddend -> tail;) s
+5 588 M
+(                Node *current_2 = smallerAddend -> tail;) s
+5 566 M
+(                int carry_over = 0;) s
+5 555 M
+(                while\(current_2 != NULL\)) s
+5 544 M
+(                {) s
+5 533 M
+(                        int total = current_1 -> value + current_2 -> value + carry_over;) s
+5 522 M
+(                        carry_over = 0;) s
+5 511 M
+(                        if \(total >= 10\)) s
+5 500 M
+(                        {) s
+5 489 M
+(                                carry_over = total/10;) s
+5 478 M
+(                                total %= 10;) s
+5 467 M
+(                        }) s
+5 456 M
+(                        Add_Digit_First\(sum, total\);) s
+5 445 M
+(                        current_1 = current_1 -> prev;) s
+5 434 M
+(                        current_2 = current_2 -> prev;) s
+5 423 M
+(                }) s
+5 401 M
+(                while\(current_1 != NULL\)) s
+5 390 M
+(                {) s
+5 379 M
+(                        Add_Digit_First\(sum, \(current_1 -> value + carry_over\)\);) s
+5 368 M
+(                        carry_over = 0;) s
+5 357 M
+(                        current_1 = current_1 -> prev;) s
+5 346 M
+(                }) s
+5 324 M
+(                if\(carry_over != 0\)) s
+5 313 M
+(                        Add_Digit_First\(sum, carry_over\);) s
+5 291 M
+(                return sum;) s
+5 280 M
+(        }       ) s
+5 269 M
+(        else) s
+5 258 M
+(        {) s
+5 247 M
+(                APInt *new_addend = malloc\(sizeof\(APInt\)\);) s
+5 236 M
+(                allocate_APInt\(new_addend\);) s
+5 225 M
+(                 \(*new_addend\) -> sign = -1*\(\(*addend\)-> sign\);) s
+5 214 M
+(                 \(*new_addend\) -> head = \(*addend\) -> head;) s
+5 203 M
+(                 \(*new_addend\) -> tail = \(*addend\) -> tail;) s
+5 192 M
+(                 \(*new_addend\) -> current = NULL;) s
+5 181 M
+(                return subtract\(adder, new_addend\);) s
+5 170 M
+(        }) s
+5 159 M
+(}) s
+5 137 M
+(APInt* subtract\(APInt* subtractor_1, APInt* subtractor_2\)) s
+5 126 M
+({) s
+5 115 M
+(        if\(\(*subtractor_1\) -> sign == \(*subtractor_2\) -> sign\)) s
+5 104 M
+(        {) s
+5 93 M
+(                Ele minuend = {\(-1 * \(*subtractor_2\) -> sign\), ) s
+5 82 M
+(                                                \(*subtractor_2\) -> head, ) s
+5 71 M
+(                                                \(*subtractor_2\) ->tail, NULL};) s
+5 60 M
+(                Ele     subtrahend = {\(*subtractor_1\) -> sign, ) s
+5 49 M
+(                                                \(*subtractor_1\) -> head, ) s
+5 38 M
+(                                                \(*subtractor_1\) ->tail, NULL};) s
+5 16 M
+(                if\(compareTo\(subtractor_1, subtractor_2\)\)) s
+5 5 M
+(                {) s
+_R
+S
+%%Page: (8) 8
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 8 def
+/fname (pa2submission.txt) def
+/fdir (.) def
+/ftail (pa2submission.txt) def
+% User defined strings:
+/fmodstr (Fri Feb 15 02:06:25 2019) def
+/pagenumstr (8) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 742 M
+(                        minuend.sign = \(*subtractor_1\) -> sign; ) s
+5 731 M
+(                        minuend.head = \(*subtractor_1\) -> head; ) s
+5 720 M
+(                        minuend.tail = \(*subtractor_1\) -> tail;) s
+5 709 M
+(                        subtrahend.sign = \(*subtractor_2\) -> sign; ) s
+5 698 M
+(                        subtrahend.head = \(*subtractor_2\) -> head; ) s
+5 687 M
+(                        subtrahend.tail = \(*subtractor_2\) ->tail;) s
+5 676 M
+(                }) s
+5 665 M
+(        ) s
+5 654 M
+(                APInt * diff = malloc\(sizeof\(APInt\)\);) s
+5 643 M
+(                allocate_APInt\(diff\);) s
+5 621 M
+(                Node *current_1 = minuend.tail;) s
+5 610 M
+(                Node *current_2 = subtrahend.tail;) s
+5 599 M
+(        ) s
+5 588 M
+(                int temp = 0;) s
+5 577 M
+(                while\(current_2 != NULL\)) s
+5 566 M
+(                {) s
+5 555 M
+(                        int difference = \(current_1 -> value - temp\) - current_2 -> value;) s
+5 544 M
+(                        temp = 0;) s
+5 533 M
+(        ) s
+5 522 M
+(                        if\(difference < 0\)) s
+5 511 M
+(                        {) s
+5 500 M
+(                                temp++;) s
+5 489 M
+(                                difference += 10;) s
+5 478 M
+(                        }) s
+5 456 M
+(                        Add_Digit_First\(diff, difference\);) s
+5 445 M
+(                        current_1 = current_1 -> prev;) s
+5 434 M
+(                        current_2 = current_2 -> prev;) s
+5 423 M
+(                }) s
+5 412 M
+(                ) s
+5 401 M
+(                while\(current_1 != NULL\)) s
+5 390 M
+(                {) s
+5 379 M
+(                        Add_Digit_First\(diff, current_1 -> value - temp\);) s
+5 368 M
+(                        temp = 0;) s
+5 357 M
+(                        current_1 = current_1 -> prev;) s
+5 346 M
+(                }) s
+5 335 M
+(        ) s
+5 324 M
+(                while\(\(\(*diff\)->head->value == 0\) && \(*diff\)->head->next != NULL\)) s
+5 313 M
+(                {) s
+5 302 M
+(                        \(*diff\)->head = \(*diff\)->head->next;) s
+5 291 M
+(                        \(*diff\)->head->prev = NULL;) s
+5 280 M
+(                }) s
+5 269 M
+(        ) s
+5 258 M
+(                return diff;) s
+5 247 M
+(        }) s
+5 236 M
+(        else) s
+5 225 M
+(        {) s
+5 214 M
+(                APInt *new_subtractor = malloc\(sizeof\(APInt\)\);) s
+5 203 M
+(                allocate_APInt\(new_subtractor\);) s
+5 192 M
+(                \(*new_subtractor\) -> sign =  -1*\(\(*subtractor_2\) -> sign\);) s
+5 181 M
+(                \(*new_subtractor\) -> head =  \(*subtractor_2\) -> head;) s
+5 170 M
+(                \(*new_subtractor\) -> tail = \(*subtractor_2\) -> tail;) s
+5 159 M
+(                \(*new_subtractor\) -> current = NULL;    ) s
+5 148 M
+(                //Need to free new_subtractor;) s
+5 137 M
+(                return add\(subtractor_1, new_subtractor\);) s
+5 126 M
+(        }) s
+5 115 M
+(}) s
+5 93 M
+(APInt* multiply\(APInt* factor_1, APInt* factor_2\)) s
+5 82 M
+({) s
+5 71 M
+(        APInt *product = malloc\(sizeof\(APInt\)\);) s
+5 60 M
+(        allocate_APInt\(product\);) s
+5 38 M
+(        Node *current_1 = \(*factor_1\)->tail;) s
+5 27 M
+(        Node *current_2;) s
+5 5 M
+(        int carry_over;) s
+_R
+S
+%%Page: (9) 9
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 9 def
+/fname (pa2submission.txt) def
+/fdir (.) def
+/ftail (pa2submission.txt) def
+% User defined strings:
+/fmodstr (Fri Feb 15 02:06:25 2019) def
+/pagenumstr (9) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 731 M
+(        APInt *placeHolder = malloc\(sizeof\(APInt\)\);) s
+5 720 M
+(        allocate_APInt\(placeHolder\);) s
+5 698 M
+(        while\(current_1 != NULL\)) s
+5 687 M
+(        {) s
+5 676 M
+(                APInt *tempPlaceHolder = malloc\(sizeof\(APInt\)\);) s
+5 665 M
+(                allocate_APInt\(tempPlaceHolder\);) s
+5 643 M
+(                current_2 = \(*factor_2\)->tail;) s
+5 632 M
+(                carry_over = 0;) s
+5 621 M
+(                while\(current_2 != NULL\)) s
+5 610 M
+(                {) s
+5 599 M
+(                        int dig = \(current_1 -> value * current_2 -> value + carry_over\);) s
+5 588 M
+(                        carry_over = 0;) s
+5 566 M
+(                        if\(dig >= 10\)) s
+5 555 M
+(                        {) s
+5 544 M
+(                                Add_Digit_First\(tempPlaceHolder, \(dig % 10\)\);) s
+5 533 M
+(                                carry_over = dig/10;) s
+5 522 M
+(                        }) s
+5 511 M
+(                        else ) s
+5 500 M
+(                                Add_Digit_First\(tempPlaceHolder, \(dig\)\);) s
+5 478 M
+(                        current_2 = current_2 -> prev;) s
+5 467 M
+(                }) s
+5 456 M
+(                if\(carry_over != 0\)) s
+5 445 M
+(                {) s
+5 434 M
+(                        Add_Digit_First\(tempPlaceHolder, carry_over\);) s
+5 423 M
+(                }) s
+5 401 M
+(                Node *place_current = \(*placeHolder\)->head;) s
+5 379 M
+(                while\(place_current != NULL\)) s
+5 368 M
+(                {) s
+5 357 M
+(                        Add_Digit_Last\(tempPlaceHolder, 0\);) s
+5 346 M
+(                        place_current = place_current -> next;) s
+5 335 M
+(                }) s
+5 313 M
+(                ) s
+5 302 M
+(                APInt * update_product = add\(product, tempPlaceHolder\);) s
+5 291 M
+(                CleanUp\(product\);) s
+5 280 M
+(                product = update_product;) s
+5 269 M
+(                ) s
+5 258 M
+(                Add_Digit_First\(placeHolder, 0\);) s
+5 247 M
+(                CleanUp\(tempPlaceHolder\);) s
+5 236 M
+(                current_1 = current_1 -> prev;) s
+5 225 M
+(        }) s
+5 214 M
+(        CleanUp\(placeHolder\);) s
+5 192 M
+(        if\(\(*factor_1\) -> sign != \(*factor_2\) -> sign\)) s
+5 181 M
+(        {) s
+5 170 M
+(                \(*product\) -> sign = -1;) s
+5 159 M
+(        }) s
+5 148 M
+(        else ) s
+5 137 M
+(        {) s
+5 126 M
+(                \(*product\) -> sign = 1;) s
+5 115 M
+(        }) s
+5 93 M
+(        return product;) s
+5 82 M
+(}) s
+5 60 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2\\007roo) s
+5 49 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2# cat APInt.c) s
+515 49 M
+(h) s
+515 49 M
+() s
+509 49 M
+() s
+503 49 M
+() s
+497 49 M
+() s
+491 49 M
+() s
+485 49 M
+() s
+479 49 M
+(NoteToGrader) s
+5 38 M
+(.txt ) s
+29 38 M
+() s
+23 38 M
+() s
+17 38 M
+() s
+11 38 M
+() s
+5 38 M
+() s
+-1 38 M
+() s
+-7 38 M
+() s
+-13 38 M
+() s
+-19 38 M
+() s
+-25 38 M
+() s
+-31 38 M
+() s
+-37 38 M
+() s
+-43 38 M
+() s
+-49 38 M
+() s
+-55 38 M
+() s
+-61 38 M
+() s
+-67 38 M
+(\\033[10PAPInt.h) s
+17 38 M
+(c) s
+17 38 M
+() s
+11 38 M
+() s
+5 38 M
+() s
+-1 38 M
+() s
+-7 38 M
+() s
+-13 38 M
+() s
+-19 38 M
+() s
+-25 38 M
+() s
+-31 38 M
+() s
+-37 38 M
+() s
+-43 38 M
+(\\033[K\\007gcc A\\007PInt.h) s
+5 27 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2\\007roo) s
+5 16 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2# ls -1) s
+5 5 M
+(\\033[0m\\033[01;32mAPInt.c\\033[0m) s
+_R
+S
+%%Page: (10) 10
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 10 def
+/fname (pa2submission.txt) def
+/fdir (.) def
+/ftail (pa2submission.txt) def
+% User defined strings:
+/fmodstr (Fri Feb 15 02:06:25 2019) def
+/pagenumstr (10) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 742 M
+(\\033[01;32mAPInt.h\\033[0m) s
+5 731 M
+(\\033[01;32mAPInt.h.gch\\033[0m) s
+5 720 M
+(\\033[01;32mNoteToGrader.txt\\033[0m) s
+5 709 M
+(\\033[01;32mREADME.txt\\033[0m) s
+5 698 M
+(\\033[01;32mdemo.c\\033[0m) s
+5 687 M
+(\\033[01;32mpa2submission.txt\\033[0m) s
+5 676 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2\\007roo) s
+5 665 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2# gcc) s
+467 665 M
+(\\033[K) s
+497 665 M
+(\\033[K) s
+527 665 M
+(\\033) s
+5 654 M
+([Kcat demo.c ) s
+5 632 M
+(//Programmer: Jeffrey Wang ) s
+5 621 M
+(//CruzID: 1659820) s
+5 610 M
+(//Data: 02.13.19) s
+5 599 M
+(//Class: COMPS-101B \(D.Bailey\)) s
+5 577 M
+(/**********************************************************************************) s
+5 566 M
+(Programming Assignment 2: Demo -- Insures that the ADT's are working ) s
+5 555 M
+(correctly is working correctly) s
+5 533 M
+(CREATED: 2/11/19 12:23 P.M) s
+5 522 M
+(Edit: 2/11/19 10:19 P.M. -- Finsished Implementation of LInked List) s
+5 511 M
+(Edit 2/12/19 2:14 P.M -- Finsished Implementation of adder and subtractor.) s
+5 500 M
+(Edit: 2/15/19 1:17 A.M -- Finished Documentation for all files ) s
+5 489 M
+(LinkedList Tutorial by  Jonathan Engelsma ) s
+5 478 M
+("Learning to Program in C " - tutorial) s
+5 467 M
+(***********************************************************************************/) s
+5 445 M
+(/* ) s
+5 434 M
+(All Calculations are double checked with programming assignment 1*/) s
+5 412 M
+(#include <stdio.h>) s
+5 401 M
+(#include "APInt.h") s
+5 390 M
+(int main\(void\)) s
+5 379 M
+({) s
+5 368 M
+(        APInt* number_1 = initi_APInt\(\);) s
+5 357 M
+(        APInt* number_2 = initi_APInt_String\("-2718281828459045235360287471352"\);) s
+5 346 M
+(        APInt* number_3 = initi_APInt_String\("141421356237309504880168872420969807856967187) s
+5 335 M
+(5"\);) s
+5 324 M
+(        APInt* number_4 = initi_APInt_Int\(-123456\);) s
+5 313 M
+(        ) s
+5 291 M
+(        printf\("Representation of No-Arg Constructor for APInt \(number_1\): \\n "\);) s
+5 280 M
+(        print\(number_1\);) s
+5 269 M
+(        printf\("\\n"\);) s
+5 258 M
+(        ) s
+5 247 M
+(        printf\("Representation of String Conversion \(with sign\) to APInt \(number_2\): \\n "\);) s
+5 236 M
+(        print\(number_2\);) s
+5 225 M
+(        printf\("\\n"\);) s
+5 214 M
+(        ) s
+5 203 M
+(        printf\("Representation of String Conversion \(without sign\) to APInt \(number_3\):  \\n) s
+5 192 M
+( "\);) s
+5 181 M
+(        print\(number_3\);) s
+5 170 M
+(        printf\("\\n"\);) s
+5 148 M
+(        printf\("Representation of Integer Conversion \(number_4\): \\n "\);) s
+5 137 M
+(    print\(number_4\);) s
+5 126 M
+(        printf\("\\n"\);) s
+5 104 M
+(        printf\("num4 + num1\(0\):\\n"\); ) s
+5 93 M
+(        APInt* sum0 = add\(number_4, number_1\);) s
+5 82 M
+(        print\(sum0\);) s
+5 71 M
+(        printf\("\\n"\);) s
+5 60 M
+(        CleanUp\(sum0\);) s
+5 49 M
+(        ) s
+5 38 M
+(        printf\("num2 + num3:\\n"\); ) s
+5 27 M
+(        APInt* sum1 = add\(number_2, number_3\);) s
+5 16 M
+(        print\(sum1\);) s
+5 5 M
+(        printf\("\\n"\);) s
+_R
+S
+%%Page: (11) 11
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 11 def
+/fname (pa2submission.txt) def
+/fdir (.) def
+/ftail (pa2submission.txt) def
+% User defined strings:
+/fmodstr (Fri Feb 15 02:06:25 2019) def
+/pagenumstr (11) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 742 M
+(        CleanUp\(sum1\);) s
+5 720 M
+(        printf\("num2 + num4:\\n"\); ) s
+5 709 M
+(        APInt* sum2 = add\(number_2, number_3\);) s
+5 698 M
+(        print\(sum2\);) s
+5 687 M
+(        printf\("\\n"\);) s
+5 676 M
+(        CleanUp\(sum2\);) s
+5 643 M
+(        printf\("num2 - num3:\\n"\); ) s
+5 632 M
+(        APInt* difference1 = subtract\(number_2, number_3\);) s
+5 621 M
+(        print\(difference1\);) s
+5 610 M
+(        printf\("\\n"\);) s
+5 599 M
+(        CleanUp\(difference1\);) s
+5 577 M
+(        printf\("num4 - num2:\\n"\); ) s
+5 566 M
+(        APInt* difference2 = subtract\(number_4, number_2\);) s
+5 555 M
+(        print\(difference2\);) s
+5 544 M
+(        printf\("\\n"\);) s
+5 533 M
+(        CleanUp\(difference2\);) s
+5 500 M
+(        printf\("num2 * num3:\\n"\); ) s
+5 489 M
+(        APInt* product = multiply\(number_2, number_3\);) s
+5 478 M
+(        print\(product\);) s
+5 467 M
+(        printf\("\\n"\);) s
+5 456 M
+(        CleanUp\(product\);) s
+5 434 M
+(        CleanUp\(number_1\);) s
+5 423 M
+(        CleanUp\(number_2\);) s
+5 412 M
+(        CleanUp\(number_3\);) s
+5 401 M
+(        CleanUp\(number_4\);) s
+5 390 M
+(}) s
+5 379 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2\\007roo) s
+5 368 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2# gcc AP\\007Int.c ) s
+5 357 M
+(Aa) s
+11 357 M
+(\\033[K) s
+41 357 M
+(\\033[Kdemo.c ) s
+5 346 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2\\007roo) s
+5 335 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2# ./a.out) s
+5 324 M
+(Representation of No-Arg Constructor for APInt \(number_1\): ) s
+5 313 M
+( +0) s
+5 291 M
+(Representation of String Conversion \(with sign\) to APInt \(number_2\): ) s
+5 280 M
+( -2718281828459045235360287471352) s
+5 258 M
+(Representation of String Conversion \(without sign\) to APInt \(number_3\):  ) s
+5 247 M
+( +1414213562373095048801688724209698078569671875) s
+5 225 M
+(Representation of Integer Conversion \(number_4\): ) s
+5 214 M
+( +123456) s
+5 192 M
+(num4 + num1\(0\):) s
+5 181 M
+(+123456) s
+5 159 M
+(num2 + num3:) s
+5 148 M
+(+1414213562373092330519860265164462718282200523) s
+5 126 M
+(num2 + num4:) s
+5 115 M
+(+1414213562373092330519860265164462718282200523) s
+5 93 M
+(num2 - num3:) s
+5 82 M
+(-1414213562373097767083517183254933438857143227) s
+5 60 M
+(num4 - num2:) s
+5 49 M
+(+2718281828459045235360287594808) s
+5 27 M
+(num2 * num3:) s
+5 16 M
+(-3844231028159116824863671637425339964674857801644174015055505725800102625000) s
+_R
+S
+%%Page: (12) 12
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 12 def
+/fname (pa2submission.txt) def
+/fdir (.) def
+/ftail (pa2submission.txt) def
+% User defined strings:
+/fmodstr (Fri Feb 15 02:06:25 2019) def
+/pagenumstr (12) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 742 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2\\007roo) s
+5 731 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA2# exit) s
+5 720 M
+(exit) s
+5 698 M
+(Script done on 2019-02-15 02:06:25-0800) s
+_R
+S
+%%Trailer
+%%Pages: 12
+%%DocumentNeededResources: font Courier-Bold Courier 
+%%EOF
