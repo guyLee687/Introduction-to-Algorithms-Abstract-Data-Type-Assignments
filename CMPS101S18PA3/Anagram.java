@@ -3,7 +3,7 @@
 //Date: 02/06/19
 //Class: CMPS101-db
 
-/*
+/*sa
  * - a constructor which uses a String, made up of alphabetic characters either 
  *   upper or lower case as an input argumen
  * - a constructor which uses a char array, made up of alphabetic characters
@@ -15,42 +15,70 @@
  */
 
 
-public Anagram
-{(
-	private String satellite;
-	private long hashValue;
-	    
+public class Anagram
+{
+	private String satellite;		//A word;
+	private long hashValue;			//The hash Value to the word
+	 
+	/**
+	  A constructor which a word into an Anagram type and assigns a
+	  hash value to it.
+	  @param String value: The word that needs to turn into an anagram..
+	 */
 	public Anagram(String value)
 	{
 		satellite = value.toLowerCase();
 	        hashValue =  createHashValue(satellite);     
 	}
 
-	public Anagram(Char[] value)
+	/**
+	  A constructor which a word into an Anagram type and assigns a
+	  hash value to it.
+	  @param Character[] value: The characters in a word that needs to 
+	  							turn into an anagram..
+	 */
+	public Anagram(Character[] value)
 	{
 		StringBuilder str = new StringBuilder();
 		for (int i = 0; i < value.length; i++)
 			str.append(value[i]);
 		satellite = str.toString().toLowerCase();
+		hashValue = createHashValue(satellite);
 	}
 
+	/**The print method for Anagram which prints the word*/
 	public void print()
 	{
 		System.out.println(satellite);
 	}
 
-	public compare(Anagram word)
+	/** 
+		This method compares this word and a following word 
+		to see if they are indeed Anagrams.
+		@param Anagram word: The word in which this Anagram 
+							is being compared to.
+		@return boolean: whether or not the words are Anagrams
+	*/
+	public boolean compare(Anagram word)
 	{
+		// Only continue to compare if the words have the same hasValues(collision)
 		if(hashValue == word.getHashValue())
 		{
-			int[] letter1 = new Int[26];
-			int[] letter2 = new Int[26];
+			//Assign an Integer array that represents a histogram of letters in words9
+			int[] letter1 = new int[26];
+			int[] letter2 = new int[26];
 
-			for(int i = 0; i < satellite.length(); i++)
-				letter1[satellite.charAt(i)]++;
+			for(int i = 0; i < satellite.length(); i++){
+				int alphabet = satellite.charAt(i) - 97;
+				if(alphabet >= 0 && alphabet <=26)
+					letter1[alphabet]++;
+			}
 
-			for(int i = 0; i < word.getAnagram().length(); i++)
-				letter2[satellite.getAnagram().charAt(i)]++;
+			for(int i = 0; i < word.getAnagram().length(); i++){
+				int alphabet = word.getAnagram().charAt(i) - 97;
+				if(alphabet >= 0 && alphabet <=26)
+					letter2[alphabet]++;
+			}
 
 			for(int i = 0; i < 26; i++)
 			{
@@ -59,7 +87,7 @@ public Anagram
 			}
 			return true;
 		}
-		else 
+		else ;
 			return false; 
 	}	
 
@@ -77,14 +105,14 @@ public Anagram
  	 *This function creates a hash value through polynomial
 	 *accumulation in order to generate a hash value. It uses
 	 *a base 5 in order to generate a unique value. 
-    	 *@param satellite: The string;
+     *@param satellite: The string;
 	 *@return hashValue: A unique hash value
 	 */  	
 	private long createHashValue(String satellite)
 	{
 		long hashValue = 0;
 		for (int i = 0; i < satellite.length(); i++)
-			hashValue += Math.pow(5,(satellite.charAt(i) - 98));
+			hashValue += Math.pow(5,((satellite.charAt(i) - 98)));
 		return hashValue;	
 	}
 }
