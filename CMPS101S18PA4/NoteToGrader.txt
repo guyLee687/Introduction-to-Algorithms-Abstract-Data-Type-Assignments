@@ -1,0 +1,11 @@
+Approach: 
+
+For the lab assignment, I completed the assignment using the trig functions given by the .Math class in the .lang library.
+I also decided to extend the 2D Vector skeleton to perform operations with 3-D operations. Furthermore, I planned to add additional methods
+such as finding the distance between two Vectors and finding the orthogonal vector to the plane formed by two 3-D vectors. 
+Many of the formulas for implementing the functionalities were referenced from my AMS 10 (Mathematic Methods for Engineers I) notes. 
+I demonstrated that all the functions work in a test.java class. 
+
+Commit History: 
+
+

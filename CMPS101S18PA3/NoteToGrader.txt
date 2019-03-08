@@ -1,0 +1,22 @@
+Approach: 
+
+My approach to the problem involved using polynomial accumulation in order to generate a 
+series of unique number and mod it by a prime number times the size of the wordList. The base
+for my polynomial accumation is 5 and is raised to the power of the letter ranking in 0-25. I found 
+the following concept in the notes below
+http://www.orcca.on.ca/~yxie/courses/cs2210b-2011/htmls/notes/05-hashtable.pdf
+
+I also used LinkedList in order to handle my collisions and stored my set of anagrams in an array inside
+an array of LinkedList. 
+
+gitLab commits: 
+
+Author: jwang358 <jwang358@ucsc.edu>
+Date:   Tue Feb 26 14:04:04 2019 -0800
+
+    Finished program
+
+Author: jwang358 <jwang358@ucsc.edu>
+Date:   Thu Feb 21 23:02:35 2019 -0800
+
+   Started Lab3 (Implemented structure of HashTable and Anagram)

@@ -12,7 +12,7 @@ Anagram.java - An Angram Type that could represent an anagram of another word.
 HashTable.java - Contains a HashTable that stores a dictionary of keys that contain Anagrams.
 	           Uses LinkedList to handle collisions.
 
-test.java - Demonstrates HashTable.java and displays execution time to check O(1) running time.
+FindAnagrams.java - Demonstrates HashTable.java and displays execution time to check O(1) running time.
 
 wordList.txt - The list of words that will be stored in HashTable.java
 

@@ -1,0 +1,1818 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 18 36 577 806
+%%Title: Enscript Output
+%%Creator: GNU Enscript 1.6.5.90
+%%CreationDate: Tue Feb 26 14:29:48 2019
+%%Orientation: Portrait
+%%Pages: (atend)
+%%DocumentMedia: A4 595 842 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6.5 90
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88591 1.6.5 90
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclamdown   	/cent         	/sterling     	
+/currency     	/yen          	/brokenbar    	/section      	
+/dieresis     	/copyright    	/ordfeminine  	/guillemotleft	
+/logicalnot   	/hyphen       	/registered   	/macron       	
+/degree       	/plusminus    	/twosuperior  	/threesuperior	
+/acute        	/mu           	/paragraph    	/bullet       	
+/cedilla      	/onesuperior  	/ordmasculine 	/guillemotright	
+/onequarter   	/onehalf      	/threequarters	/questiondown 	
+/Agrave       	/Aacute       	/Acircumflex  	/Atilde       	
+/Adieresis    	/Aring        	/AE           	/Ccedilla     	
+/Egrave       	/Eacute       	/Ecircumflex  	/Edieresis    	
+/Igrave       	/Iacute       	/Icircumflex  	/Idieresis    	
+/Eth          	/Ntilde       	/Ograve       	/Oacute       	
+/Ocircumflex  	/Otilde       	/Odieresis    	/multiply     	
+/Oslash       	/Ugrave       	/Uacute       	/Ucircumflex  	
+/Udieresis    	/Yacute       	/Thorn        	/germandbls   	
+/agrave       	/aacute       	/acircumflex  	/atilde       	
+/adieresis    	/aring        	/ae           	/ccedilla     	
+/egrave       	/eacute       	/ecircumflex  	/edieresis    	
+/igrave       	/iacute       	/icircumflex  	/idieresis    	
+/eth          	/ntilde       	/ograve       	/oacute       	
+/ocircumflex  	/otilde       	/odieresis    	/divide       	
+/oslash       	/ugrave       	/uacute       	/ucircumflex  	
+/udieresis    	/yacute       	/thorn        	/ydieresis    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 10 10 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [595 842] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-simple 1.6.5 90
+
+/do_header {	% print default simple header
+  gsave
+    d_header_x d_header_y HFpt_h 3 div add translate
+
+    HF setfont
+    user_header_p {
+      5 0 moveto user_header_left_str show
+
+      d_header_w user_header_center_str stringwidth pop sub 2 div
+      0 moveto user_header_center_str show
+
+      d_header_w user_header_right_str stringwidth pop sub 5 sub
+      0 moveto user_header_right_str show
+    } {
+      5 0 moveto fname show
+      45 0 rmoveto fmodstr show
+      45 0 rmoveto pagenumstr show
+    } ifelse
+
+  grestore
+} def
+%%EndResource
+/d_page_w 559 def
+/d_page_h 770 def
+/d_header_x 0 def
+/d_header_y 755 def
+/d_header_w 559 def
+/d_header_h 15 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 559 def
+/d_footer_h 0 def
+/d_output_w 559 def
+/d_output_h 755 def
+/cols 1 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 1 def
+/fname (pa3submissionfile.txt) def
+/fdir (.) def
+/ftail (pa3submissionfile.txt) def
+% User defined strings:
+/fmodstr (Tue Feb 26 14:27:38 2019) def
+/pagenumstr (1) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 742 M
+(Script started on 2019-02-26 14:23:08-0800) s
+5 731 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3\\007roo) s
+5 720 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3# exit) s
+473 720 M
+() s
+467 720 M
+() s
+461 720 M
+(ist) s
+473 720 M
+() s
+467 720 M
+() s
+461 720 M
+() s
+455 720 M
+(cat Anagram.java) s
+5 709 M
+( ) s
+5 709 M
+() s
+-1 709 M
+() s
+-7 709 M
+() s
+-13 709 M
+() s
+-19 709 M
+() s
+-25 709 M
+() s
+-31 709 M
+() s
+-37 709 M
+() s
+-43 709 M
+() s
+-49 709 M
+() s
+-55 709 M
+() s
+-61 709 M
+() s
+-67 709 M
+() s
+-73 709 M
+() s
+-79 709 M
+() s
+-85 709 M
+() s
+-91 709 M
+(eist\\033[K) s
+-37 709 M
+() s
+-43 709 M
+() s
+-49 709 M
+(xit) s
+-37 709 M
+() s
+-43 709 M
+() s
+-49 709 M
+() s
+-55 709 M
+(\\033[K\\007pwe) s
+17 709 M
+(\\033[Kd) s
+5 698 M
+(/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3) s
+5 687 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3\\007roo) s
+5 676 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3# ls -1) s
+5 665 M
+(\\033[0m\\033[01;32mAnagram.java\\033[0m) s
+5 654 M
+(\\033[01;32mFindAnagrams.java\\033[0m) s
+5 643 M
+(\\033[01;32mHashTable.java\\033[0m) s
+5 632 M
+(\\033[01;32mNoteToGrader.txt\\033[0m) s
+5 621 M
+(\\033[01;32mREADME.txt\\033[0m) s
+5 610 M
+(\\033[01;32mpa3submissionfile.txt\\033[0m) s
+5 599 M
+(\\033[01;32mwordList.txt\\033[0m) s
+5 588 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3\\007roo) s
+5 577 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3# cat README.txt ) s
+5 566 M
+(...\\CMPS101S18PA3) s
+5 544 M
+(README.txt- a short file which lists all the files in the directory and describes what they) s
+5 533 M
+( are.) s
+5 511 M
+(NoteToGrader.txt - a short note in which you describe your approach. ) s
+5 500 M
+(                     It also shows a commit log in where I stored) s
+5 489 M
+(                      my programs in a remote server on gitLab.) s
+5 467 M
+(Anagram.java - An Angram Type that could represent an anagram of another word.) s
+5 456 M
+(               Uses Polynomial Accumulation in order to generate hash values.) s
+5 434 M
+(HashTable.java - Contains a HashTable that stores a dictionary of keys that contain Anagram) s
+5 423 M
+(s.) s
+5 412 M
+(                   Uses LinkedList to handle collisions.) s
+5 390 M
+(FindAnagrams.java - Demonstrates HashTable.java and displays execution time to check O\(1\) r) s
+5 379 M
+(unning time.) s
+5 357 M
+(wordList.txt - The list of words that will be stored in HashTable.java) s
+5 335 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3\\007roo) s
+5 324 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3# cat NoteToGrader) s
+5 313 M
+(.txt ) s
+5 302 M
+(Approach: ) s
+5 280 M
+(My approach to the problem involved using polynomial accumulation in order to generate a ) s
+5 269 M
+(series of unique number and mod it by a prime number times the size of the wordList. The ba) s
+5 258 M
+(se) s
+5 247 M
+(for my polynomial accumation is 5 and is raised to the power of the letter ranking in 0-25.) s
+5 236 M
+( I found ) s
+5 225 M
+(the following concept in the notes below) s
+5 214 M
+(http://www.orcca.on.ca/~yxie/courses/cs2210b-2011/htmls/notes/05-hashtable.pdf) s
+5 192 M
+(I also used LinkedList in order to handle my collisions and stored my set of anagrams in an) s
+5 181 M
+( array inside) s
+5 170 M
+(an array of LinkedList. ) s
+5 148 M
+(gitLab commits: ) s
+5 126 M
+(Author: jwang358 <jwang358@ucsc.edu>) s
+5 115 M
+(Date:   Tue Feb 26 14:04:04 2019 -0800) s
+5 93 M
+(    Finished program) s
+5 71 M
+(Author: jwang358 <jwang358@ucsc.edu>) s
+5 60 M
+(Date:   Thu Feb 21 23:02:35 2019 -0800) s
+5 38 M
+(   Started Lab3 \(Implemented structure of HashTable and Anagram\)) s
+5 27 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3\\007roo) s
+5 16 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3# cat Anagram.java) s
+5 5 M
+( ) s
+_R
+S
+%%Page: (2) 2
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 2 def
+/fname (pa3submissionfile.txt) def
+/fdir (.) def
+/ftail (pa3submissionfile.txt) def
+% User defined strings:
+/fmodstr (Tue Feb 26 14:27:38 2019) def
+/pagenumstr (2) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 731 M
+(//Programmer: Jeffrey Wang) s
+5 720 M
+(//Date: 02/06/19) s
+5 709 M
+(//Class: CMPS101-db) s
+5 687 M
+(/*sa) s
+5 676 M
+( * - a constructor which uses a String, made up of alphabetic characters either ) s
+5 665 M
+( *   upper or lower case as an input argumen) s
+5 654 M
+( * - a constructor which uses a char array, made up of alphabetic characters) s
+5 643 M
+( *   either upper or lower case as an input argument. ) s
+5 632 M
+( * - a method for printing. ) s
+5 621 M
+( * - a method for comparing two Anagram variables that returns true or false.) s
+5 610 M
+( * - a method that returns the word part of an Anagram variable. ) s
+5 599 M
+( * - do not allow user to get the code part of an Anagram variable.) s
+5 588 M
+( */) s
+5 555 M
+(public class Anagram) s
+5 544 M
+({) s
+5 533 M
+(        private String satellite;               //A word;) s
+5 522 M
+(        private long hashValue;                 //The hash Value to the word) s
+5 511 M
+(         ) s
+5 500 M
+(        /**) s
+5 489 M
+(          A constructor which a word into an Anagram type and assigns a) s
+5 478 M
+(          hash value to it.) s
+5 467 M
+(          @param String value: The word that needs to turn into an anagram..) s
+5 456 M
+(         */) s
+5 445 M
+(        public Anagram\(String value\)) s
+5 434 M
+(        {) s
+5 423 M
+(                satellite = value.toLowerCase\(\);) s
+5 412 M
+(                hashValue =  createHashValue\(satellite\);     ) s
+5 401 M
+(        }) s
+5 379 M
+(        /**) s
+5 368 M
+(          A constructor which a word into an Anagram type and assigns a) s
+5 357 M
+(          hash value to it.) s
+5 346 M
+(          @param Character[] value: The characters in a word that needs to ) s
+5 335 M
+(                                                                turn into an anagram..) s
+5 324 M
+(         */) s
+5 313 M
+(        public Anagram\(Character[] value\)) s
+5 302 M
+(        {) s
+5 291 M
+(                StringBuilder str = new StringBuilder\(\);) s
+5 280 M
+(                for \(int i = 0; i < value.length; i++\)) s
+5 269 M
+(                        str.append\(value[i]\);) s
+5 258 M
+(                satellite = str.toString\(\).toLowerCase\(\);) s
+5 247 M
+(                hashValue = createHashValue\(satellite\);) s
+5 236 M
+(        }) s
+5 214 M
+(        /**The print method for Anagram which prints the word*/) s
+5 203 M
+(        public void print\(\)) s
+5 192 M
+(        {) s
+5 181 M
+(                System.out.println\(satellite\);) s
+5 170 M
+(        }) s
+5 148 M
+(        /** ) s
+5 137 M
+(                This method compares this word and a following word ) s
+5 126 M
+(                to see if they are indeed Anagrams.) s
+5 115 M
+(                @param Anagram word: The word in which this Anagram ) s
+5 104 M
+(                                                        is being compared to.) s
+5 93 M
+(                @return boolean: whether or not the words are Anagrams) s
+5 82 M
+(        */) s
+5 71 M
+(        public boolean compare\(Anagram word\)) s
+5 60 M
+(        {) s
+5 49 M
+(                // Only continue to compare if the words have the same hasValues\(collision\)) s
+5 38 M
+(                if\(hashValue == word.getHashValue\(\)\)) s
+5 27 M
+(                {) s
+5 16 M
+(                        //Assign an Integer array that represents a histogram of letters in) s
+5 5 M
+( words9) s
+_R
+S
+%%Page: (3) 3
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 3 def
+/fname (pa3submissionfile.txt) def
+/fdir (.) def
+/ftail (pa3submissionfile.txt) def
+% User defined strings:
+/fmodstr (Tue Feb 26 14:27:38 2019) def
+/pagenumstr (3) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 742 M
+(                        int[] letter1 = new int[26];) s
+5 731 M
+(                        int[] letter2 = new int[26];) s
+5 709 M
+(                        for\(int i = 0; i < satellite.length\(\); i++\){) s
+5 698 M
+(                                int alphabet = satellite.charAt\(i\) - 97;) s
+5 687 M
+(                                if\(alphabet >= 0 && alphabet <=26\)) s
+5 676 M
+(                                        letter1[alphabet]++;) s
+5 665 M
+(                        }) s
+5 643 M
+(                        for\(int i = 0; i < word.getAnagram\(\).length\(\); i++\){) s
+5 632 M
+(                                int alphabet = word.getAnagram\(\).charAt\(i\) - 97;) s
+5 621 M
+(                                if\(alphabet >= 0 && alphabet <=26\)) s
+5 610 M
+(                                        letter2[alphabet]++;) s
+5 599 M
+(                        }) s
+5 577 M
+(                        for\(int i = 0; i < 26; i++\)) s
+5 566 M
+(                        {) s
+5 555 M
+(                                if\(letter1[i] != letter2[i]\)) s
+5 544 M
+(                                        return false;) s
+5 533 M
+(                        }) s
+5 522 M
+(                        return true;) s
+5 511 M
+(                }) s
+5 500 M
+(                else ;) s
+5 489 M
+(                        return false; ) s
+5 478 M
+(        }       ) s
+5 456 M
+(        /*Returns word of Anagram*/) s
+5 445 M
+(        public String getAnagram\(\)) s
+5 434 M
+(        {) s
+5 423 M
+(                return satellite;) s
+5 412 M
+(        }) s
+5 390 M
+(        /*Returns hashValue*/) s
+5 379 M
+(        public long getHashValue\(\)) s
+5 368 M
+(        {) s
+5 357 M
+(                return hashValue;) s
+5 346 M
+(        }) s
+5 335 M
+(        ) s
+5 324 M
+(        /**) s
+5 313 M
+(         *This function creates a hash value through polynomial) s
+5 302 M
+(         *accumulation in order to generate a hash value. It uses) s
+5 291 M
+(         *a base 5 in order to generate a unique value. ) s
+5 280 M
+(     *@param satellite: The string;) s
+5 269 M
+(         *@return hashValue: A unique hash value) s
+5 258 M
+(         */     ) s
+5 247 M
+(        private long createHashValue\(String satellite\)) s
+5 236 M
+(        {) s
+5 225 M
+(                long hashValue = 0;) s
+5 214 M
+(                for \(int i = 0; i < satellite.length\(\); i++\)) s
+5 203 M
+(                        hashValue += Math.pow\(5,\(\(satellite.charAt\(i\) - 98\)\)\);) s
+5 192 M
+(                return hashValue;       ) s
+5 181 M
+(        }) s
+5 170 M
+(}) s
+5 148 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3\\007roo) s
+5 137 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3# cat HashTable.ja) s
+5 126 M
+(va ) s
+5 115 M
+(import java.io.*;) s
+5 104 M
+(import java.util.*;) s
+5 82 M
+(//Programmer: Jeffrey Wang) s
+5 71 M
+(//Date: 02/26/19) s
+5 60 M
+(//COMPS-101-db) s
+5 38 M
+(/**) s
+5 27 M
+( * The following class generates a Hash Table from a list of Anagram words) s
+5 16 M
+( * from a textfile. The Table with be sized 10 times the available list and will * use a li) s
+5 5 M
+(nkedList to store sets of Anagram.) s
+_R
+S
+%%Page: (4) 4
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 4 def
+/fname (pa3submissionfile.txt) def
+/fdir (.) def
+/ftail (pa3submissionfile.txt) def
+% User defined strings:
+/fmodstr (Tue Feb 26 14:27:38 2019) def
+/pagenumstr (4) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 742 M
+( */) s
+5 720 M
+(public class HashTable) s
+5 709 M
+({) s
+5 698 M
+(        private LinkedList[] anagramSets;       //A Hash Table that utilizes a LinkedList t) s
+5 687 M
+(o ) s
+5 676 M
+(                                                //Handle collisions.) s
+5 665 M
+(        private int n;                          //Size of list) s
+5 643 M
+(        /**) s
+5 632 M
+(        * HashTable Constructor: Intializes a HashTable with a file.txt. It must) s
+5 621 M
+(        * be initialized with a file. ) s
+5 610 M
+(        * @param File wordList: A file that contains the words of anagrams.) s
+5 599 M
+(        *) s
+5 588 M
+(        */) s
+5 577 M
+(        public HashTable\(File wordList\) throws IOException) s
+5 566 M
+(        {) s
+5 555 M
+(                //Implement File reader to tranverse through list of words) s
+5 544 M
+(                FileReader file = new FileReader\(wordList\);) s
+5 533 M
+(                Scanner scan = new Scanner\(file\);) s
+5 522 M
+(                System.out.println\("Reading wordList.txt..."\);) s
+5 511 M
+(                ) s
+5 500 M
+(                //Set the size of the HashTable) s
+5 489 M
+(                n = 2017 * \(Integer.parseInt\(scan.nextLine\(\)\)\);) s
+5 478 M
+(                anagramSets = new LinkedList[n];) s
+5 467 M
+(                ) s
+5 456 M
+(                //Counting number of collisions) s
+5 445 M
+(                int count = 0;) s
+5 423 M
+(                //Inputs the keys into the hash table) s
+5 412 M
+(                while\(scan.hasNextLine\(\)\)) s
+5 401 M
+(                {) s
+5 390 M
+(                        //Generates the key associated with the hash table) s
+5 379 M
+(                        //By taking the mod of the size of array) s
+5 368 M
+(                        Anagram temp = new Anagram\(scan.nextLine\(\)\);) s
+5 357 M
+(                        int key = \(int\)\(temp.getHashValue\(\) % n\);) s
+5 346 M
+(                        ) s
+5 335 M
+(                        //Flag for when the Anagram has be inserted into Hash Table) s
+5 324 M
+(                        Boolean flag = true;) s
+5 313 M
+(                        ) s
+5 302 M
+(                        //Labels the first and next LinkedList within a space in anagram) s
+5 291 M
+(                        LinkedList head = anagramSets[key];) s
+5 280 M
+(                        LinkedList next = head;) s
+5 258 M
+(                        //Transerve through loop till Anagram type is inserted) s
+5 247 M
+(                        while\(flag\)) s
+5 236 M
+(                        {       ) s
+5 225 M
+(                                if\(next != null\){) s
+5 214 M
+(                                }) s
+5 203 M
+(                                //If there is no nextLinkedList) s
+5 192 M
+(                                if\(next == null\)) s
+5 181 M
+(                                {) s
+5 170 M
+(                                        //Input a newLinkedList with set of Angrams to arra) s
+5 159 M
+(y) s
+5 148 M
+(                                        if\(head == null\)) s
+5 137 M
+(                                        {) s
+5 126 M
+(                                                anagramSets[key] =  new LinkedList\(temp\);) s
+5 115 M
+(                                                flag = false;) s
+5 104 M
+(                                        }) s
+5 93 M
+(                                        //Sets the new LinkedList to point as the next one) s
+5 82 M
+(                                        //if there was a LinkedList before it.  ) s
+5 71 M
+(                                        else) s
+5 60 M
+(                                        {) s
+5 49 M
+(                                                head.setNext\(new LinkedList\(temp\)\);) s
+5 38 M
+(                                                flag = false;) s
+5 27 M
+(                                                count++;        ) s
+5 16 M
+(                                        }) s
+5 5 M
+(                                } ) s
+_R
+S
+%%Page: (5) 5
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 5 def
+/fname (pa3submissionfile.txt) def
+/fdir (.) def
+/ftail (pa3submissionfile.txt) def
+% User defined strings:
+/fmodstr (Tue Feb 26 14:27:38 2019) def
+/pagenumstr (5) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 742 M
+(                                //Checks whether or not the Anagram belongs in a set of ) s
+5 731 M
+(                                //Anagrams) s
+5 720 M
+(                                else if\(temp.compare\(next.getHead\(\)\)\)) s
+5 709 M
+(                                {) s
+5 698 M
+(                                        next.add\(temp\);) s
+5 687 M
+(                                        flag = false;) s
+5 676 M
+(                                }) s
+5 665 M
+(                                //Point to the next set of LinkedLists) s
+5 654 M
+(                                else) s
+5 643 M
+(                                {) s
+5 632 M
+(                                        head = next;) s
+5 621 M
+(                                        next = next.getNext\(\);) s
+5 610 M
+(                                }) s
+5 599 M
+(                        }) s
+5 588 M
+(                }) s
+5 577 M
+(                System.out.println\("Handling " + count + " collisions..."\);) s
+5 555 M
+(                //Close filereader) s
+5 544 M
+(                file.close\(\);) s
+5 533 M
+(                System.out.println\("Closing wordList.txt..."\);) s
+5 511 M
+(        }) s
+5 489 M
+(        /**) s
+5 478 M
+(        * This method searchs through a Hash Table and returns an) s
+5 467 M
+(    * array of Strings that are anagrams of a word.) s
+5 456 M
+(        * @param Anagram focus: The word that we are trying to ) s
+5 445 M
+(        *                        search in the hash Table.) s
+5 434 M
+(        * @return String[]: Returns an array of string that is an anagram ) s
+5 423 M
+(        *                   of focus.) s
+5 412 M
+(        */) s
+5 401 M
+(        public String[] search\(Anagram focus\)) s
+5 390 M
+(        {       ) s
+5 379 M
+(                LinkedList sameKey = anagramSets[\(int\)\(focus.getHashValue\(\) % n\)];) s
+5 368 M
+(                while\(sameKey != null\)) s
+5 357 M
+(                {) s
+5 346 M
+(                        //Returns LinkedList holding Anagrams) s
+5 335 M
+(                        if\(focus.compare\(sameKey.getHead\(\)\)\)) s
+5 324 M
+(                                return sameKey.getAnagrams\(\);) s
+5 313 M
+(                        sameKey = sameKey.getNext\(\);) s
+5 302 M
+(                }) s
+5 291 M
+(                return new String[] {""};) s
+5 280 M
+(        }) s
+5 258 M
+(        /**) s
+5 247 M
+(         * The following private class will define a set of 'Anagram\(object\)' that ) s
+5 236 M
+(         * are actual Anagrams.) s
+5 225 M
+(         */ ) s
+5 214 M
+(        private class LinkedList) s
+5 203 M
+(        {) s
+5 192 M
+(                private Anagram head = null;            //Points to the first Anagram of th) s
+5 181 M
+(e set) s
+5 170 M
+(                private LinkedList next = null;         //Points to the next set of Anagram) s
+5 159 M
+(s with the same hash value.) s
+5 148 M
+(                private ArrayList<Anagram> set;         //Creates an ArrayList that stores ) s
+5 137 M
+(values of set.) s
+5 126 M
+(                ) s
+5 115 M
+(                /**) s
+5 104 M
+(                * Required Constructor which takes in the first Anagram word in a set of An) s
+5 93 M
+(agrams.) s
+5 82 M
+(                * @param Anagram first: The first word in a set of Anagrams.) s
+5 71 M
+(                */                      ) s
+5 60 M
+(                public LinkedList\(Anagram first\)) s
+5 49 M
+(                {) s
+5 38 M
+(                        head = first;                                   ) s
+5 27 M
+(                        set = new ArrayList<>\(\);) s
+5 16 M
+(                        set.add\(first\);) s
+5 5 M
+(                }) s
+_R
+S
+%%Page: (6) 6
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 6 def
+/fname (pa3submissionfile.txt) def
+/fdir (.) def
+/ftail (pa3submissionfile.txt) def
+% User defined strings:
+/fmodstr (Tue Feb 26 14:27:38 2019) def
+/pagenumstr (6) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 731 M
+(                /**Accessor for Head*/) s
+5 720 M
+(                public Anagram getHead\(\)) s
+5 709 M
+(                {) s
+5 698 M
+(                        return head;) s
+5 687 M
+(                }) s
+5 676 M
+(                ) s
+5 665 M
+(                /**Mutator for next set of Anagrams*/) s
+5 654 M
+(                public void setNext\(LinkedList next\)) s
+5 643 M
+(                {) s
+5 632 M
+(                        this.next = next;) s
+5 621 M
+(                }) s
+5 610 M
+(                ) s
+5 599 M
+(                /**Accessor for next set of Anagrams*/) s
+5 588 M
+(                public LinkedList getNext\(\)) s
+5 577 M
+(                {) s
+5 566 M
+(                        return next;) s
+5 555 M
+(                }) s
+5 544 M
+(                ) s
+5 533 M
+(                /**adds an Anagram to the set*/) s
+5 522 M
+(                public void add\(Anagram newEle\)) s
+5 511 M
+(                {) s
+5 500 M
+(                        set.add\(newEle\);) s
+5 489 M
+(                }       ) s
+5 478 M
+(                ) s
+5 467 M
+(                /**Returns and array of strings that in the Anagram set*/) s
+5 456 M
+(                public String[] getAnagrams\(\)) s
+5 445 M
+(                {) s
+5 434 M
+(                        String[] a = new String[0];) s
+5 423 M
+(                        ArrayList<String> wordAnagrams = new ArrayList<>\(\);) s
+5 412 M
+(                        for\(Anagram word : set\){) s
+5 401 M
+(                                wordAnagrams.add\(word.getAnagram\(\)\);) s
+5 390 M
+(                        }) s
+5 379 M
+(                        return\(wordAnagrams.toArray\(a\)\);) s
+5 368 M
+(                }               ) s
+5 357 M
+(        }) s
+5 346 M
+(}) s
+5 335 M
+( ) s
+5 324 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3\\007roo) s
+5 313 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3# javan) s
+479 313 M
+(\\033[Kc Anag) s
+5 302 M
+(ram.java HashTabl) s
+5 302 M
+(le.java ) s
+5 291 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3\\007roo) s
+5 280 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3# ls -1) s
+5 269 M
+(\\033[0m\\033[01;32mAnagram.class\\033[0m) s
+5 258 M
+(\\033[01;32mAnagram.java\\033[0m) s
+5 247 M
+(\\033[01;32mFindAnagrams.java\\033[0m) s
+5 236 M
+(\\033[01;32m'HashTable$LinkedList.class'\\033[0m) s
+5 225 M
+(\\033[01;32mHashTable.class\\033[0m) s
+5 214 M
+(\\033[01;32mHashTable.java\\033[0m) s
+5 203 M
+(\\033[01;32mNoteToGrader.txt\\033[0m) s
+5 192 M
+(\\033[01;32mREADME.txt\\033[0m) s
+5 181 M
+(\\033[01;32mpa3submissionfile.txt\\033[0m) s
+5 170 M
+(\\033[01;32mwordList.txt\\033[0m) s
+5 159 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3\\007roo) s
+5 148 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3# cat FindAnagrams) s
+5 137 M
+(.java ) s
+5 126 M
+(import java.util.*;) s
+5 115 M
+(import java.io.*;) s
+5 93 M
+(//Programmer: Jeffrey Wang) s
+5 82 M
+(//Date: 02/26/19) s
+5 71 M
+(//COMPS-101-db) s
+5 49 M
+(/**) s
+5 38 M
+( *      This test program demonstrates storing a list of words in a ) s
+5 27 M
+( *      Hash Table with an emphasis on these points: ) s
+5 16 M
+( *      - compiles without errors and is a serious attempt at a solution) s
+5 5 M
+( *  - only reads word file from disk once.) s
+_R
+S
+%%Page: (7) 7
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 7 def
+/fname (pa3submissionfile.txt) def
+/fdir (.) def
+/ftail (pa3submissionfile.txt) def
+% User defined strings:
+/fmodstr (Tue Feb 26 14:27:38 2019) def
+/pagenumstr (7) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 742 M
+( *      - for comparisons uses an algorithm faster than brute force, ) s
+5 731 M
+( *      letterby letter comparison for each word in the word list.T\(wordsize\) =O\(1\).) s
+5 720 M
+( *      - correctly identifies anagrams for the input string) s
+5 709 M
+( *      - does NOT print out the input string as a possible anagram ) s
+5 698 M
+( *      if ithappens to be a word \(the input string does not need to be a word\)) s
+5 687 M
+( *      - allows for multiple input strings) s
+5 676 M
+(*/) s
+5 654 M
+(public class FindAnagrams ) s
+5 643 M
+({) s
+5 632 M
+(        //Analyze running time of program.) s
+5 621 M
+(        private static long startTime;) s
+5 610 M
+(        private static Long endTime;) s
+5 588 M
+(        public static void main\(String[] args\) throws IOException) s
+5 577 M
+(        {) s
+5 566 M
+(                //Opens file in order to ) s
+5 555 M
+(                File file = new File\("wordList.txt"\);) s
+5 533 M
+(                //Analyze running time of creating hashTable) s
+5 522 M
+(                startTime = System.nanoTime\(\);) s
+5 511 M
+(                HashTable list = new HashTable\(file\);) s
+5 500 M
+(                endTime = System.nanoTime\(\);) s
+5 489 M
+(                System.out.println\("HashTable Generate Time in milliseconds: " + \(endTime -) s
+5 478 M
+( startTime\)/1000000 + "\\n"\);) s
+5 456 M
+(                Scanner keyboard = new Scanner\(System.in\);) s
+5 434 M
+(                StringTokenizer inputs;                 //Tokenizer to take in multiple inp) s
+5 423 M
+(uts) s
+5 412 M
+(                String sentinel = " ";                  //Sentinel value in order to exit a) s
+5 401 M
+(nagram loop) s
+5 379 M
+(                //Tihs loop interates through multiple inputs from user and displays anagra) s
+5 368 M
+(m) s
+5 357 M
+(                while\(!sentinel.equals\("-1"\)\)) s
+5 346 M
+(                {) s
+5 335 M
+(                        System.out.println\("Type in a word to find the anagrams or type in ) s
+5 324 M
+(-1 to quit"\);) s
+5 313 M
+(                        inputs = new StringTokenizer\(keyboard.nextLine\(\)\);) s
+5 291 M
+(                        System.out.println\("\\n"\);) s
+5 269 M
+(                        //Iterates through multiple inputs within a single line) s
+5 258 M
+(                        while\(inputs.hasMoreElements\(\)\)) s
+5 247 M
+(                        {       ) s
+5 236 M
+(                                sentinel = inputs.nextToken\(\);) s
+5 225 M
+(                                Anagram word = new Anagram\(sentinel\);) s
+5 214 M
+(                                System.out.print\("Word: "\);) s
+5 203 M
+(                                word.print\(\);) s
+5 181 M
+(                                System.out.println\("Anagrams: "\);) s
+5 159 M
+(                                //Analyze the running time of hash search) s
+5 148 M
+(                                startTime = System.nanoTime\(\); ) s
+5 137 M
+(                                String[] anagra = list.search\(word\);) s
+5 126 M
+(                                endTime = System.nanoTime\(\);) s
+5 104 M
+(                                //Prints set of anagrams in Linked List except the word its) s
+5 93 M
+(elf) s
+5 82 M
+(                                for \(int i = 0; i < anagra.length; i++\)) s
+5 71 M
+(                                {) s
+5 60 M
+(                                        if\(!word.getAnagram\(\).equals\(anagra[i]\)\)) s
+5 49 M
+(                                                System.out.println\(anagra[i]\);) s
+5 38 M
+(                                }) s
+5 16 M
+(                                System.out.println\("Search Time in milliseconds: " + \(endTi) s
+5 5 M
+(me - startTime\)/1000000\);) s
+_R
+S
+%%Page: (8) 8
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 8 def
+/fname (pa3submissionfile.txt) def
+/fdir (.) def
+/ftail (pa3submissionfile.txt) def
+% User defined strings:
+/fmodstr (Tue Feb 26 14:27:38 2019) def
+/pagenumstr (8) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 742 M
+(                                System.out.println\("\\n\\n"\);) s
+5 731 M
+(                        }       ) s
+5 709 M
+(                }) s
+5 687 M
+(                        // Testing character constructor of Anagram) s
+5 676 M
+(                        System.out.println\("Testing Character Constructor: "\);) s
+5 665 M
+(                        Character[] characters = new Character[]{'d', 'o', 'g'};) s
+5 654 M
+(                        Anagram dog = new Anagram\(characters\);) s
+5 643 M
+(                        String[] doglist = list.search\(dog\);) s
+5 621 M
+(                        System.out.println\("Angrams of " + dog.getAnagram\(\) + ":"\);) s
+5 610 M
+(                        for \(int i = 0; i < doglist.length; i++\)) s
+5 599 M
+(                        {) s
+5 588 M
+(                                if\(!dog.getAnagram\(\).equals\(doglist[i]\)\)) s
+5 577 M
+(                                        System.out.println\(doglist[i]\);) s
+5 566 M
+(                        }) s
+5 555 M
+(                                ) s
+5 544 M
+(        }) s
+5 533 M
+(}) s
+5 522 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3\\007roo) s
+5 511 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3# javac FindAnagra) s
+5 500 M
+(ms.java ) s
+5 489 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3\\007roo) s
+5 478 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3# ls -1) s
+5 467 M
+(\\033[0m\\033[01;32mAnagram.class\\033[0m) s
+5 456 M
+(\\033[01;32mAnagram.java\\033[0m) s
+5 445 M
+(\\033[01;32mFindAnagrams.class\\033[0m) s
+5 434 M
+(\\033[01;32mFindAnagrams.java\\033[0m) s
+5 423 M
+(\\033[01;32m'HashTable$LinkedList.class'\\033[0m) s
+5 412 M
+(\\033[01;32mHashTable.class\\033[0m) s
+5 401 M
+(\\033[01;32mHashTable.java\\033[0m) s
+5 390 M
+(\\033[01;32mNoteToGrader.txt\\033[0m) s
+5 379 M
+(\\033[01;32mREADME.txt\\033[0m) s
+5 368 M
+(\\033[01;32mpa3submissionfile.txt\\033[0m) s
+5 357 M
+(\\033[01;32mwordList.txt\\033[0m) s
+5 346 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3\\007roo) s
+5 335 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3#  java Find\\007An) s
+5 324 M
+(agrams.) s
+41 324 M
+(\\033[K) s
+5 313 M
+(Reading wordList.txt...) s
+5 302 M
+(Handling 11894 collisions...) s
+5 291 M
+(Closing wordList.txt...) s
+5 280 M
+(HashTable Generate Time in milliseconds: 3298) s
+5 258 M
+(Type in a word to find the anagrams or type in -1 to quit) s
+5 247 M
+(items) s
+5 214 M
+(Word: items) s
+5 203 M
+(Anagrams: ) s
+5 192 M
+(emits) s
+5 181 M
+(metis) s
+5 170 M
+(mites) s
+5 159 M
+(smite) s
+5 148 M
+(stime) s
+5 137 M
+(times) s
+5 126 M
+(Search Time in milliseconds: 0) s
+5 82 M
+(Type in a word to find the anagrams or type in -1 to quit) s
+5 71 M
+(apple ) s
+35 71 M
+( ) s
+35 71 M
+() s
+29 71 M
+( ) s
+29 71 M
+() s
+23 71 M
+( ) s
+23 71 M
+() s
+17 71 M
+( ) s
+17 71 M
+() s
+11 71 M
+( ) s
+11 71 M
+(epre) s
+29 71 M
+( ) s
+29 71 M
+(s) s
+5 38 M
+(Word: aeprs) s
+5 27 M
+(Anagrams: ) s
+5 16 M
+(apers) s
+5 5 M
+(apres) s
+_R
+S
+%%Page: (9) 9
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 9 def
+/fname (pa3submissionfile.txt) def
+/fdir (.) def
+/ftail (pa3submissionfile.txt) def
+% User defined strings:
+/fmodstr (Tue Feb 26 14:27:38 2019) def
+/pagenumstr (9) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 742 M
+(asper) s
+5 731 M
+(pares) s
+5 720 M
+(parse) s
+5 709 M
+(pears) s
+5 698 M
+(prase) s
+5 687 M
+(presa) s
+5 676 M
+(rapes) s
+5 665 M
+(reaps) s
+5 654 M
+(spare) s
+5 643 M
+(spear) s
+5 632 M
+(Search Time in milliseconds: 0) s
+5 588 M
+(Type in a word to find the anagrams or type in -1 to quit) s
+5 577 M
+( aelst opst aekst expect ) s
+5 544 M
+(Word: aelst) s
+5 533 M
+(Anagrams: ) s
+5 522 M
+(least) s
+5 511 M
+(setal) s
+5 500 M
+(slate) s
+5 489 M
+(stale) s
+5 478 M
+(steal) s
+5 467 M
+(stela) s
+5 456 M
+(taels) s
+5 445 M
+(tales) s
+5 434 M
+(teals) s
+5 423 M
+(tesla) s
+5 412 M
+(Search Time in milliseconds: 0) s
+5 368 M
+(Word: opst) s
+5 357 M
+(Anagrams: ) s
+5 346 M
+(opts) s
+5 335 M
+(post) s
+5 324 M
+(pots) s
+5 313 M
+(spot) s
+5 302 M
+(stop) s
+5 291 M
+(tops) s
+5 280 M
+(Search Time in milliseconds: 0) s
+5 236 M
+(Word: aekst) s
+5 225 M
+(Anagrams: ) s
+5 214 M
+(skate) s
+5 203 M
+(stake) s
+5 192 M
+(steak) s
+5 181 M
+(takes) s
+5 170 M
+(teaks) s
+5 159 M
+(Search Time in milliseconds: 0) s
+5 115 M
+(Word: expect) s
+5 104 M
+(Anagrams: ) s
+5 93 M
+(except) s
+5 82 M
+(Search Time in milliseconds: 0) s
+5 38 M
+(Type in a word to find the anagrams or type in -1 to quit) s
+_R
+S
+%%Page: (10) 10
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 10 def
+/fname (pa3submissionfile.txt) def
+/fdir (.) def
+/ftail (pa3submissionfile.txt) def
+% User defined strings:
+/fmodstr (Tue Feb 26 14:27:38 2019) def
+/pagenumstr (10) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 742 M
+(Type in a word to find the anagrams or type in -1 to quit) s
+5 731 M
+(123123) s
+5 698 M
+(Word: 123123) s
+5 687 M
+(Anagrams: ) s
+5 665 M
+(Search Time in milliseconds: 0) s
+5 621 M
+(Type in a word to find the anagrams or type in -1 to quit) s
+5 610 M
+(lollipop) s
+5 577 M
+(Word: lollipop) s
+5 566 M
+(Anagrams: ) s
+5 555 M
+(Search Time in milliseconds: 0) s
+5 511 M
+(Type in a word to find the anagrams or type in -1 to quit) s
+5 500 M
+(-1) s
+5 467 M
+(Word: -1) s
+5 456 M
+(Anagrams: ) s
+5 434 M
+(Search Time in milliseconds: 0) s
+5 390 M
+(Testing Character Constructor: ) s
+5 379 M
+(Angrams of dog:) s
+5 368 M
+(god) s
+5 357 M
+(\\033]0;root@LAPTOP-52K1L0AJ: /mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3\\007roo) s
+5 346 M
+(t@LAPTOP-52K1L0AJ:/mnt/c/Users/Jeffrey/Desktop/CMPS101S18PA/CMPS101S18PA3# exit) s
+5 335 M
+(exit) s
+5 313 M
+(Script done on 2019-02-26 14:27:38-0800) s
+_R
+S
+%%Trailer
+%%Pages: 10
+%%DocumentNeededResources: font Courier-Bold Courier 
+%%EOF

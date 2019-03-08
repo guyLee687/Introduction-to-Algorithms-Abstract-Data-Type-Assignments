@@ -91,11 +91,13 @@ public class Anagram
 			return false; 
 	}	
 
+	/*Returns word of Anagram*/
 	public String getAnagram()
 	{
 		return satellite;
 	}
 
+	/*Returns hashValue*/
 	public long getHashValue()
 	{
 		return hashValue;

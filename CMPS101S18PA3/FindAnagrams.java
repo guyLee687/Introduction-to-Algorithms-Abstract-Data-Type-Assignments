@@ -18,7 +18,7 @@ import java.io.*;
  *	- allows for multiple input strings
 */
 
-public class test 
+public class FindAnagrams 
 {
 	//Analyze running time of program.
 	private static long startTime;
